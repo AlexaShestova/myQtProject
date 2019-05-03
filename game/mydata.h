@@ -24,8 +24,8 @@ public:
     Q_INVOKABLE void addItem (int i, const QColor &c);
     Q_INVOKABLE void startGame();
 
-    Q_INVOKABLE bool checkRect(int ind, bool player1);
-    Q_INVOKABLE void xod(int ind, bool player1);
+    Q_INVOKABLE bool checkRect(int ind, bool isFirstPlayer);
+    Q_INVOKABLE void xod(int ind, bool isFirstPlayer);
 
 signals:
 
@@ -42,7 +42,7 @@ private:
     const QColor m_color1 = QColor(m_colors.at(0));
     const QColor m_color2 = QColor(m_colors.at(m_colors.size() - 1));
 
-    void checkPole();
+    void checkPole(bool isFirstPlayer);
 };
 
 #endif // MYDATA_H

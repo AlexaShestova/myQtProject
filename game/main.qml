@@ -1,6 +1,6 @@
 import QtQuick 2.8
 //import QtQuick.Window 2.2
-import QtQuick.Controls 1.4
+import QtQuick.Controls 1.4//2.0//1.4
 //import MyData 1.0
 
 ApplicationWindow {
@@ -59,6 +59,19 @@ ApplicationWindow {
 
             delegate: Rectangle {
                 id: rectDelegate
+                Behavior on color {
+                    SequentialAnimation {
+
+                        PauseAnimation {
+                            duration: 500//Delay
+                        }
+                        ColorAnimation {
+                            duration: 2000
+                        }
+                    }
+
+
+                }
                 x: {
 //                    console.log(index + "/ " + MyData.size + "=" + Math.floor(index/ MyData.size ))
                     return Math.floor((index / MyData.size)) * width + 20
@@ -80,6 +93,7 @@ ApplicationWindow {
                     MyData
             //        }
 
+
             MouseArea {
                 id: mouseArea
                 anchors.fill: parent
@@ -89,8 +103,13 @@ ApplicationWindow {
                     console.log("check = " + MyData.checkRect(grid.indexAt(mouseX,mouseY), grid.isFirstPlayer))
                     if(MyData.checkRect(grid.indexAt(mouseX,mouseY), grid.isFirstPlayer))
                     {
-                        MyData.xod(grid.indexAt(mouseX,mouseY), grid.isFirstPlayer);
+//                        grid.itemAt(mouseX,mouseY).color = "black"
+                        MyData.process(grid.indexAt(mouseX,mouseY), grid.isFirstPlayer);
                         grid.isFirstPlayer = !grid.isFirstPlayer;
+//                        MyData.beginResetModel();
+//                        grid.itemAt(mouseX,mouseY).update()
+
+//                        MyData.
                     }
                 }
             }

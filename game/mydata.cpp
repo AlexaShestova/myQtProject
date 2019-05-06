@@ -33,6 +33,40 @@ QVariant MyData::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
+QMap<int, QVariant> MyData::itemData(const QModelIndex &index) const
+{
+//    return
+    QMap<int, QVariant> Data;
+    Data.insert(IntRole, m_intData.at(index.row()));
+    Data.insert(ColorRole, m_colorData.at(index.row()));
+
+    return Data;
+}
+
+bool MyData::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+    // model.ColorData = "red"
+
+    if (!index.isValid()) {
+            return false;
+        }
+
+        switch (role) {
+        case ColorRole:
+//            m_colorData[index.row()] = QColor(value.toString());
+            return false;   // This property can not be set
+        case IntRole:
+//            m_intData.replace(index.row(), value.toInt()) ;
+            break;
+        default:
+            return false;
+        }
+
+//        emit dataChanged(index, index/*, QVector<int>() << role*/);
+
+        return true;
+}
+
 int MyData::getSize() const
 {
     return M;
@@ -66,41 +100,81 @@ void MyData::startGame()
 
 bool MyData::checkRect(int ind, bool isFirstPlayer)
 {
+    bool result = false;
     if( m_colorData.at(ind) != m_color1 && m_colorData.at(ind) != m_color2)
     {
-        int i = ind / M;
-        int j = ind % M;
-        int a = (i-1) * M + j;
-        int b = (i+1) * M + j;
-        int c = (i) * M + j-1;
-        int d = (i) * M + j+1;
-        qDebug() << (i-1) * M + j << (i+1) * M + j <<  (i) * M + j-1 << (i) * M + j+1;
+
+        QList<int> adjCells = getAdjCells(ind);
         if(isFirstPlayer)
-            return ((a >= 0 && a < m_colorData.size() && m_colorData.at(a) == m_color1) ||
-                    (b >= 0 && b < m_colorData.size() && m_colorData.at(b) == m_color1) ||
-                    (c >= 0 && c < m_colorData.size() && m_colorData.at(c) == m_color1) ||
-                    (d >= 0 && d < m_colorData.size() && m_colorData.at(d) == m_color1) );
+        {
+            foreach(int a, adjCells)
+                result = result || (m_colorData.at(a) == m_color1);
+        }
         else
-            return ((a >= 0 && a < m_colorData.size() && m_colorData.at(a) == m_color2) ||
-                    (b >= 0 && b < m_colorData.size() && m_colorData.at(b) == m_color2) ||
-                    (c >= 0 && c < m_colorData.size() && m_colorData.at(c) == m_color2) ||
-                    (d >= 0 && d < m_colorData.size() && m_colorData.at(d) == m_color2) );
+        {
+            foreach(int a, adjCells)
+                result = result || (m_colorData.at(a) == m_color2);
+        }
     }
-    return false;
+    return result;
 }
 
-void MyData::xod(int ind, bool isFirstPlayer)
+void MyData::process(int ind, bool isFirstPlayer)
 {
+    QColor color = m_colorData.at(ind);
     if(isFirstPlayer)
+    {
         m_colorData.replace(ind, m_color1);
-    else
-        m_colorData.replace(ind, m_color2);
+        QList<int> adjCells = getAdjCells(ind);
 
+        foreach(int a, adjCells)
+        {
+            if(m_colorData.at(a) == color)
+                process(a, isFirstPlayer);
+        }
+    }
+    else
+    {
+        m_colorData.replace(ind, m_color2);
+        QList<int> adjCells = getAdjCells(ind);
+        foreach(int a, adjCells)
+        {
+            if(m_colorData.at(a) == color)
+                process(a, isFirstPlayer);
+                //m_colorData.replace(a, m_color1);
+        }
+    }
+    QModelIndex index = createIndex(ind,0);
+    emit dataChanged(index, index, QVector<int>() << ColorRole);
 }
 
-void MyData::checkPole(bool isFirstPlayer)
+bool MyData::checkPole() // если хоть одна доступная клетка ??
 {
+   bool result = false;
+   foreach(QColor c, m_colorData)
+   {
+       result = c != m_color1 && c != m_color2;
+       if(result)
+           break;
+   }
+    return result;
+}
 
+QList<int> MyData::getAdjCells(int ind)
+{
+    QList <int> adjCells;
+    int i = ind / M;
+    int j = ind % M;
+    if( i - 1 >= 0 )
+        adjCells.append( (i-1) * M + j);
+    if( i + 1 < N )
+        adjCells.append( (i+1) * M + j);
+    if( j-1 >= 0 )
+        adjCells.append( (i) * M + j-1);
+    if( j+1 < N )
+        adjCells.append( (i) * M + j+1);
+
+    return adjCells;
 }
 
 //void MyData::checkRect(int ind/*, bool isFirstPlayer*/)

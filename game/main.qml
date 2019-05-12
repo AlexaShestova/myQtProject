@@ -1,7 +1,5 @@
 import QtQuick 2.8
-//import QtQuick.Window 2.2
-import QtQuick.Controls 1.4//2.0//1.4
-//import MyData 1.0
+import QtQuick.Controls 2.5
 
 ApplicationWindow {
     id: window
@@ -9,23 +7,46 @@ ApplicationWindow {
     width: 640
     height: 720
     title: qsTr("My Game")
+    menuBar: MenuBar {
+            Menu {
+                title: qsTr("&Game")
+                Action { text: qsTr("&New...")
+                }
+                Action { text: qsTr("&Open...") }
+                Action { text: qsTr("&Save") }
+                Action { text: qsTr("Save &As...") }
+                MenuSeparator { }
+                Action { text: qsTr("&Quit") }
+
+
+            }
+            Menu {
+                title: qsTr("&Settings")
+                Action { text: qsTr("&Game board") }
+                Action { text: qsTr("&game difficulty") }
+            }
+            Menu {
+                title: qsTr("&Help")
+                Action { text: qsTr("&About") }
+            }
+        }
     Component.onCompleted: {
         //console.log(MyData.size)
     }
 
-    menuBar: MenuBar {
-              Menu {
-                  title: "Game"
-                  MenuItem { text: "newGame" }
-                  MenuItem { text: "loadGame" }
-              }
+//    menuBar: MenuBar {
+//        Menu {
+//            title: "Game"
+//            MenuItem { text: "newGame" }
+//            MenuItem { text: "loadGame" }
+//        }
 
-              Menu {
-                  title: "Settings"
-                  MenuItem { text: "Colors" }
-                  MenuItem { text: "Players" }
-              }
-          }
+//        Menu {
+//            title: "Settings"
+//            MenuItem { text: "Colors" }
+//            MenuItem { text: "Players" }
+//        }
+//    }
 
     Item {
         id: root
@@ -45,74 +66,73 @@ ApplicationWindow {
             color: (grid.isFirstPlayer ) ? "yellow" : "blue"
         }
 
-        GridView {
+
+        Grid {
             id: grid
-            width: MyData.size * (root.widthRect + 20)
-            height: MyData.size * (root.widthRect + 20)
-//            baselineOffset: 5
-            anchors.bottom: root.bottom
-//            anchors.left: root.left
-//            anchors.right: root.right
-//            anchors.verticalCenter: root.verticalCenter
+            width: window.height * 0.7
+            height: width
+            columns: MyData.size
+            anchors.verticalCenter: root.verticalCenter
             anchors.horizontalCenter: root.horizontalCenter
+            columnSpacing: 5
+            rowSpacing: 5
             property bool isFirstPlayer: true
 
-            delegate: Rectangle {
-                id: rectDelegate
-                Behavior on color {
-                    SequentialAnimation {
+            Repeater{
 
-                        PauseAnimation {
-                            duration: 500//Delay
+                Rectangle {
+                    id: rectDelegate
+                    Behavior on color {
+                        SequentialAnimation {
+
+                            PauseAnimation {
+                                duration: 0//Delay
+                            }
+                            ColorAnimation {
+                                duration: 500
+                            }
                         }
-                        ColorAnimation {
-                            duration: 2000
+
+
+                    }
+                    width: grid.width / MyData.size
+                    height: width
+                    color: ColorData
+                    Text {
+                        font.pointSize: 30
+                        anchors.centerIn: parent
+                        text: IntData
+                    }
+                    MouseArea {
+                        id: mouseArea
+                        anchors.fill: parent
+
+                        onClicked: {
+                            if(MyData.checkRect(index, grid.isFirstPlayer))
+                            {
+                                MyData.process(index, grid.isFirstPlayer);
+                                grid.isFirstPlayer = !grid.isFirstPlayer;
+                            }
+                            else
+                                dialog_warning.visible = true
                         }
                     }
-
-
                 }
-                x: {
-//                    console.log(index + "/ " + MyData.size + "=" + Math.floor(index/ MyData.size ))
-                    return Math.floor((index / MyData.size)) * width + 20
-                }
-                y: (index % MyData.size) * width
-                width: root.widthRect//root.width / model.count
-                height: root.widthRect
-                color: ColorData
-                Text {
-                    font.pointSize: 30
-                    anchors.centerIn: parent
-                    text: IntData
-                }
-
-            }
-
-            model:  /*ListView {
-            model:*/
-                    MyData
-            //        }
+                model: MyData
 
 
-            MouseArea {
-                id: mouseArea
-                anchors.fill: parent
-
-                onClicked: {
-                    console.log("onClicked : (" + mouseX + " : " + mouseY + ") : index = " + grid.indexAt(mouseX,mouseY))
-                    console.log("check = " + MyData.checkRect(grid.indexAt(mouseX,mouseY), grid.isFirstPlayer))
-                    if(MyData.checkRect(grid.indexAt(mouseX,mouseY), grid.isFirstPlayer))
-                    {
-//                        grid.itemAt(mouseX,mouseY).color = "black"
-                        MyData.process(grid.indexAt(mouseX,mouseY), grid.isFirstPlayer);
-                        grid.isFirstPlayer = !grid.isFirstPlayer;
-//                        MyData.beginResetModel();
-//                        grid.itemAt(mouseX,mouseY).update()
-
-//                        MyData.
-                    }
-                }
             }
         }
+        Dialog {
+            id: dialog_warning
+            title: "WARNING"
+            standardButtons: Dialog.Ok
+            contentWidth: grid.width
+
+            Label{ text: "Выберите другое поле!" }
+
+            onAccepted: console.log("Ok clicked")
+        }
     }
+
 }

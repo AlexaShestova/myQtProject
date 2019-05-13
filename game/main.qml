@@ -1,5 +1,6 @@
 import QtQuick 2.8
 import QtQuick.Controls 2.5
+import QtQuick.Dialogs 1.2
 
 ApplicationWindow {
     id: window
@@ -10,13 +11,27 @@ ApplicationWindow {
     menuBar: MenuBar {
             Menu {
                 title: qsTr("&Game")
-                Action { text: qsTr("&New...")
+                Action {
+                    text: qsTr("&New...")
+                    onTriggered: { MyController.startGame(); grid.isFirstPlayer = true; }
                 }
-                Action { text: qsTr("&Open...") }
-                Action { text: qsTr("&Save") }
-                Action { text: qsTr("Save &As...") }
+                Action {
+                    text: qsTr("&Open...")
+//                onTriggered: openFileDialog.open()
+                }
+                Action {
+                    text: qsTr("&Save")
+                    onTriggered: saveFile()
+                }
+                Action {
+                    text: qsTr("Save &As...")
+//                    onTriggered: saveFileDialog.open()
+                }
                 MenuSeparator { }
-                Action { text: qsTr("&Quit") }
+                Action {
+                    text: qsTr("&Quit")
+                    onTriggered: Qt.quit()
+                }
 
 
             }
@@ -52,9 +67,6 @@ ApplicationWindow {
         id: root
         anchors.fill: parent
 
-        property int widthRect : 80
-
-
         Text {
             height: 50
             text: (grid.isFirstPlayer) ? "Player 1" : "Player 2"
@@ -76,6 +88,7 @@ ApplicationWindow {
             anchors.horizontalCenter: root.horizontalCenter
             columnSpacing: 5
             rowSpacing: 5
+
             property bool isFirstPlayer: true
 
             Repeater{
@@ -108,13 +121,16 @@ ApplicationWindow {
                         anchors.fill: parent
 
                         onClicked: {
-                            if(MyData.checkRect(index, grid.isFirstPlayer))
+                            if(MyController.checkRect(index))
                             {
-                                MyData.process(index, grid.isFirstPlayer);
+                                MyController.process(index);
                                 grid.isFirstPlayer = !grid.isFirstPlayer;
+
+                                if(!MyController.checkPole())
+                                    dialog_gameOver.open();
                             }
                             else
-                                dialog_warning.visible = true
+                                dialog_warning.open()//visible = true
                         }
                     }
                 }
@@ -126,13 +142,63 @@ ApplicationWindow {
         Dialog {
             id: dialog_warning
             title: "WARNING"
-            standardButtons: Dialog.Ok
-            contentWidth: grid.width
+//            standardButton: Dialog.Ok
+//            contentWidth: grid.width
 
             Label{ text: "Выберите другое поле!" }
 
             onAccepted: console.log("Ok clicked")
         }
+
+        Dialog {
+            id: dialog_gameOver
+            title: "WARNING"
+//            standardButton: Dialog.Ok
+//            contentWidth: grid.width
+
+            Label{ text: "Game Over!" }
+
+            onAccepted: {
+                MyController.startGame();
+                console.log("Ok clicked")
+            }
+        }
+//        FileDialog
+//        {
+//            id: openFileDialog
+////            visible: false
+////            modality: Qt.WindowModal
+////            selectMultiple: false
+////            selectExisting: true
+////            selectFolder: false
+////            nameFilters: [ "Font files (*.txt)" ]
+////            title: qsTr("Select file")
+
+////            onAccepted:
+////            {
+////                console.log( "open file accepted" )
+////                fileUrl.toString()
+
+////            }
+//        }
+//        FileDialog
+//        {
+//            id: saveFileDialog
+////            visible: false
+//            modality: Qt.WindowModal
+//            selectMultiple: false
+//            selectExisting: true
+//            selectFolder: false
+//            nameFilters: [ "Font files (*.txt)" ]
+//            title: qsTr("Select fils")
+
+//            onAccepted:
+//            {
+//                console.log( "save file accepted" )
+//                fileUrl.toString()
+
+//            }
+//        }
     }
 
 }

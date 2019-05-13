@@ -14,7 +14,7 @@ public:
         IntRole = Qt::UserRole + 1,
        ColorRole
     };
-    explicit MyData(int n, int m, QObject *parent = nullptr);
+    explicit MyData(int m, QObject *parent = nullptr);
     int rowCount(const QModelIndex &parent) const Q_DECL_OVERRIDE;
     QHash<int, QByteArray> roleNames() const Q_DECL_OVERRIDE;
     QVariant data(const QModelIndex &index, int role) const Q_DECL_OVERRIDE;
@@ -26,11 +26,15 @@ public:
 
     int getSize() const;
 
-    Q_INVOKABLE void addItem (int i, const QColor &c);
-    Q_INVOKABLE void startGame();
+    void clearAll();
+    void replaceData(int ind, QColor newColor);
+    /*Q_INVOKABLE*/ void addItem (int i, const QColor &c);
+    void process(int ind, QColor cReplace);
 
-    Q_INVOKABLE bool checkRect(int ind, bool isFirstPlayer);
-    Q_INVOKABLE void process(int ind, bool isFirstPlayer);
+    QList<int> getAdjCells(int ind);
+
+    bool checkColorData(int ind, QColor color);
+    bool checkPole(QColor c1, QColor c2/*bool isFirstPlayer*/);
 
 signals:
 
@@ -42,15 +46,12 @@ private:
     QList<QColor> m_colorData;
     QHash<int, QByteArray> m_roles;
     int M=5;
-    int N=5;
+//    int N=5;
 
-    const QList<QString> m_colors={"yellow", "red", "green", "cyan", "magenta", "blue" };
-    const QColor m_color1 = QColor(m_colors.at(0));
-    const QColor m_color2 = QColor(m_colors.at(m_colors.size() - 1));
 
-    bool checkPole(/*bool isFirstPlayer*/);
 
-    QList<int> getAdjCells(int ind);
+
+
 };
 
 #endif // MYDATA_H

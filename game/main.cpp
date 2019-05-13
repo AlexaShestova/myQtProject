@@ -1,4 +1,5 @@
 #include "mydata.h"
+#include "controller.h"
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
@@ -12,10 +13,12 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
 
     QQmlApplicationEngine engine;
-    MyData *data = new MyData(5,5,&engine);
-    data->startGame();
+    MyData *data = new MyData(5,&engine);
+    Controller *controller = new Controller(data);
+    controller->startGame();
 
     engine.rootContext()->setContextProperty("MyData", data);
+    engine.rootContext()->setContextProperty("MyController", controller);
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
 
 

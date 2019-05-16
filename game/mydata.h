@@ -8,13 +8,14 @@
 class MyData : public QAbstractListModel
 {
     Q_OBJECT
-    Q_PROPERTY(int size READ getSize CONSTANT)
+    Q_PROPERTY(int columns READ getColumns CONSTANT)
+    Q_PROPERTY(int rows READ getRows CONSTANT)
 public:
     enum {
         IntRole = Qt::UserRole + 1,
        ColorRole
     };
-    explicit MyData(int m, QObject *parent = nullptr);
+    explicit MyData(int m, int n, QObject *parent = nullptr);
     int rowCount(const QModelIndex &parent) const Q_DECL_OVERRIDE;
     QHash<int, QByteArray> roleNames() const Q_DECL_OVERRIDE;
     QVariant data(const QModelIndex &index, int role) const Q_DECL_OVERRIDE;
@@ -24,7 +25,8 @@ public:
 
 //    void setData(const QModelIndex &index, int role) const Q_DECL_OVERRIDE;
 
-    int getSize() const;
+    int getColumns() const;
+    int getRows() const;
 
     void clearAll();
     void replaceData(int ind, QColor newColor);
@@ -36,6 +38,10 @@ public:
     bool checkColorData(int ind, QColor color);
     bool checkPole(QColor c1, QColor c2/*bool isFirstPlayer*/);
 
+    int getNumberRectColor(QColor color);
+
+    QString getColorsData();
+
 signals:
 
 
@@ -46,11 +52,7 @@ private:
     QList<QColor> m_colorData;
     QHash<int, QByteArray> m_roles;
     int M=5;
-//    int N=5;
-
-
-
-
+    int N=5;
 
 };
 

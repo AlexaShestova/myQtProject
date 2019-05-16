@@ -8,12 +8,13 @@ ApplicationWindow {
     width: 640
     height: 720
     title: qsTr("My Game")
+
     menuBar: MenuBar {
             Menu {
                 title: qsTr("&Game")
                 Action {
                     text: qsTr("&New...")
-                    onTriggered: { MyController.startGame(); grid.isFirstPlayer = true; }
+                    onTriggered: { MyController.startGame(); }
                 }
                 Action {
                     text: qsTr("&Open...")
@@ -21,7 +22,7 @@ ApplicationWindow {
                 }
                 Action {
                     text: qsTr("&Save")
-                    onTriggered: saveFile()
+                    onTriggered: saveGame();
                 }
                 Action {
                     text: qsTr("Save &As...")
@@ -49,6 +50,14 @@ ApplicationWindow {
         //console.log(MyData.size)
     }
 
+    function saveGame()
+    {
+        var date = new Date();
+        var fileName = date.getYear() + "-" + date.getMonth() + "-" +
+                + date.getDay() + "-" + date.getHours() + "-" + date.getMinutes() + ".json";
+        MyController.saveGame(fileName)//File()
+    }
+
 //    menuBar: MenuBar {
 //        Menu {
 //            title: "Game"
@@ -69,27 +78,26 @@ ApplicationWindow {
 
         Text {
             height: 50
-            text: (grid.isFirstPlayer) ? "Player 1" : "Player 2"
+            text: (MyController.isFirstPlayer) ? "Player 1" : "Player 2"
             anchors.left: root.left
             anchors.right: root.right
             anchors.top: root.top
             font.pointSize: 30
-            horizontalAlignment: (grid.isFirstPlayer ) ? Text.AlignLeft : Text.AlignRight
-            color: (grid.isFirstPlayer ) ? "yellow" : "blue"
+            horizontalAlignment: (MyController.isFirstPlayer ) ? Text.AlignLeft : Text.AlignRight
+            color: (MyController.isFirstPlayer ) ? "yellow" : "blue"
         }
 
 
         Grid {
             id: grid
-            width: window.height * 0.7
-            height: width
-            columns: MyData.size
+            width: window.width * 0.7
+            height: window.height * 0.7
+            columns: MyData.columns
+            rows:  MyData.rows
             anchors.verticalCenter: root.verticalCenter
             anchors.horizontalCenter: root.horizontalCenter
             columnSpacing: 5
             rowSpacing: 5
-
-            property bool isFirstPlayer: true
 
             Repeater{
 
@@ -108,8 +116,8 @@ ApplicationWindow {
 
 
                     }
-                    width: grid.width / MyData.size
-                    height: width
+                    width: grid.width / MyData.columns
+                    height: grid.height / MyData.rows
                     color: ColorData
                     Text {
                         font.pointSize: 30
@@ -124,7 +132,6 @@ ApplicationWindow {
                             if(MyController.checkRect(index))
                             {
                                 MyController.process(index);
-                                grid.isFirstPlayer = !grid.isFirstPlayer;
 
                                 if(!MyController.checkPole())
                                     dialog_gameOver.open();
@@ -156,7 +163,8 @@ ApplicationWindow {
 //            standardButton: Dialog.Ok
 //            contentWidth: grid.width
 
-            Label{ text: "Game Over!" }
+            Label{ text: "Game Over! " +/* ((!grid.isFirstPlayer) ? "Player1" : "Player2")*/ +
+                         + MyController.getCountRect()[0] + ":" + MyController.getCountRect()[1]}
 
             onAccepted: {
                 MyController.startGame();

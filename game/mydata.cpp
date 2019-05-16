@@ -1,9 +1,9 @@
 #include "mydata.h"
 #include <QDebug>
 
-MyData::MyData(int m, QObject *parent) :
+MyData::MyData(int m, int n, QObject *parent) :
     QAbstractListModel(parent),
-//    N(n),
+    N(n),
     M(m)
 {
     m_roles.insert(IntRole, "IntData");
@@ -67,9 +67,14 @@ bool MyData::setData(const QModelIndex &index, const QVariant &value, int role)
     return true;
 }
 
-int MyData::getSize() const
+int MyData::getColumns() const
 {
     return M;
+}
+
+int MyData::getRows() const
+{
+    return N;
 }
 
 void MyData::clearAll()
@@ -140,7 +145,7 @@ bool MyData::checkPole(QColor c1, QColor c2) // если хоть одна до�
 {
     bool result = false;
     //   foreach(QColor aC, m_colorData)
-    for(int i = 0; i < M*M; i++)
+    for(int i = 0; i < M*N; i++)
     {
         QColor aC = m_colorData.at(i);
         if(aC == c1)
@@ -158,6 +163,28 @@ bool MyData::checkPole(QColor c1, QColor c2) // если хоть одна до�
     return result;
 }
 
+int MyData::getNumberRectColor(QColor color)
+{
+    int result = 0;
+    foreach(QColor c, m_colorData)
+    {
+        if(c == color) result++;
+    }
+    return result;
+}
+
+QString MyData::getColorsData()
+{
+    QString colorsData;
+
+    foreach(QColor c, m_colorData)
+    {
+        QStringList l = c.colorNames();
+        colorsData += c.name() + " ";
+    }
+    return colorsData;
+}
+
 QList<int> MyData::getAdjCells(int ind)
 {
     QList <int> adjCells;
@@ -165,7 +192,7 @@ QList<int> MyData::getAdjCells(int ind)
     int j = ind % M;
     if( i - 1 >= 0 )
         adjCells.append( (i-1) * M + j);
-    if( i + 1 < M )
+    if( i + 1 < N )
         adjCells.append( (i+1) * M + j);
     if( j-1 >= 0 )
         adjCells.append( (i) * M + j-1);

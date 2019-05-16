@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
 
     QQmlApplicationEngine engine;
-    MyData *data = new MyData(5,&engine);
+    MyData *data = new MyData(10,10,&engine);
     Controller *controller = new Controller(data);
     controller->startGame();
 

@@ -100,16 +100,17 @@ void MyData::addItem(int i, const QColor &c)
     emit dataChanged(index, index, QVector<int>() << ColorRole);
 }
 
-void MyData::process(int ind, QColor cReplace)
+void MyData::process(int ind, QString strColorReplace)
 {
     QColor c = m_colorData.at(ind);
+    QColor cReplace(strColorReplace);
     m_colorData.replace(ind, cReplace);
     QList<int> adjCells = getAdjCells(ind);
 
     foreach(int a, adjCells)
     {
         if(m_colorData.at(a) == c)
-            process(a, cReplace);
+            process(a, strColorReplace);
     }
 
     QModelIndex index = createIndex(ind,0);
@@ -136,15 +137,17 @@ void MyData::process(int ind, QColor cReplace)
 //    m_colorData.replace( (M-1) * N - 1, m_color2);
 //}
 
-bool MyData::checkColorData(int ind, QColor color)
+bool MyData::checkColorData(int ind, QString strColor)
 {
-    return m_colorData.at(ind) == color;
+    return m_colorData.at(ind) == QColor(strColor);
 }
 
-bool MyData::checkPole(QColor c1, QColor c2) // если хоть одна доступная клетка ??
+bool MyData::checkPole(QColor strC1, QColor strC2) // если хоть одна доступная клетка ??
 {
     bool result = false;
     //   foreach(QColor aC, m_colorData)
+    QColor c1(strC1);
+    QColor c2(strC2);
     for(int i = 0; i < M*N; i++)
     {
         QColor aC = m_colorData.at(i);
@@ -163,9 +166,10 @@ bool MyData::checkPole(QColor c1, QColor c2) // если хоть одна до�
     return result;
 }
 
-int MyData::getNumberRectColor(QColor color)
+int MyData::getNumberRectColor(QString strColor)
 {
     int result = 0;
+    QColor  color(strColor);
     foreach(QColor c, m_colorData)
     {
         if(c == color) result++;

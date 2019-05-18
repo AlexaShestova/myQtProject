@@ -38,7 +38,13 @@ ApplicationWindow {
             }
             Menu {
                 title: qsTr("&Settings")
-                Action { text: qsTr("&Game board") }
+                Action {
+                    text: qsTr("&Game board")
+                    onTriggered:{
+                        settingsWindow.updateSettings();
+                        settingsWindow.visible = true;
+                    }
+                }
                 Action { text: qsTr("&game difficulty") }
             }
             Menu {
@@ -77,6 +83,7 @@ ApplicationWindow {
         anchors.fill: parent
 
         Text {
+            id: label
             height: 50
             text: (MyController.isFirstPlayer) ? "Player 1" : "Player 2"
             anchors.left: root.left
@@ -87,6 +94,16 @@ ApplicationWindow {
             color: (MyController.isFirstPlayer ) ? "yellow" : "blue"
         }
 
+        Text {
+            height: 50
+            text: MyController.countFirstColor + " : " + MyController.countSecondColor
+            anchors.left: root.left
+            anchors.right: root.right
+            anchors.top: label.bottom
+            font.pointSize: 20
+            horizontalAlignment: Text.AlignHCenter
+//            color: (MyController.isFirstPlayer ) ? "yellow" : "blue"
+        }
 
         Grid {
             id: grid
@@ -163,8 +180,7 @@ ApplicationWindow {
 //            standardButton: Dialog.Ok
 //            contentWidth: grid.width
 
-            Label{ text: "Game Over! " +/* ((!grid.isFirstPlayer) ? "Player1" : "Player2")*/ +
-                         + MyController.getCountRect()[0] + ":" + MyController.getCountRect()[1]}
+            Label{ text: "Game Over! "}
 
             onAccepted: {
                 MyController.startGame();
@@ -207,6 +223,15 @@ ApplicationWindow {
 
 //            }
 //        }
+        SettingsDialog
+        {
+            id:settingsWindow
+            title: qsTr("Settings")
+            onAccepted:
+            {
+                MyController.startGame();
+            }
+        }
     }
 
 }

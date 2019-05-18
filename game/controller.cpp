@@ -31,17 +31,24 @@ void Controller::startGame()
     for(int i = 0; i < m_myData->getColumns() * m_myData->getRows(); i++)
         //        for(int j = 0; j < N; j++)
     {
-        int randI = rand()%(m_colors.size()-2) + 1;
+        int randI = rand() % (m_numberColors + 2);
+
+
+        while( m_colors.at(randI) == m_color1 || m_colors.at(randI) == m_color2 )
+        {
+            randI = rand() % (m_numberColors + 2);
+
+        }
         QColor c(m_colors.at(randI));
         m_myData->addItem(i, c);
     }
 
-    m_myData->replaceData( 0, m_color1);
-    m_myData->replaceData( 1, m_color1);
-    m_myData->replaceData( m_myData->getColumns(), m_color1);
-    m_myData->replaceData( m_myData->getColumns()*m_myData->getRows() - 1, m_color2);
-    m_myData->replaceData( m_myData->getColumns()*m_myData->getRows() - 2, m_color2);
-    m_myData->replaceData( (m_myData->getRows()-1) * m_myData->getColumns() - 1, m_color2);
+    m_myData->replaceData( 0, QColor( m_color1 ));
+    m_myData->replaceData( 1, QColor( m_color1 ));
+    m_myData->replaceData( m_myData->getColumns(), QColor( m_color1 ));
+    m_myData->replaceData( m_myData->getColumns()*m_myData->getRows() - 1, QColor( m_color2 ));
+    m_myData->replaceData( m_myData->getColumns()*m_myData->getRows() - 2, QColor( m_color2 ));
+    m_myData->replaceData( (m_myData->getRows()-1) * m_myData->getColumns() - 1, QColor( m_color2 ));
 }
 
 bool Controller::checkRect(int ind)
@@ -72,10 +79,14 @@ void Controller::process(int ind)
     if(m_isFirstPlayer)
     {
         m_myData->process(ind, m_color1);
+
+        emit countFirstColorChanged();
     }
     else
     {
         m_myData->process(ind, m_color2);
+
+        emit countSecondColorChanged();
     }
 
     m_isFirstPlayer = !m_isFirstPlayer;
@@ -117,7 +128,7 @@ bool Controller::saveGame(const QString &fileName)
     obj["N"] = m_myData->getRows();
     obj["colorsData"] = m_myData->getColorsData();
     obj["isFirstPlayer"] = m_isFirstPlayer;
-    obj["isOnePlayer"] = m_isOnePlayer;
+    obj["numberPlayers"] = m_numberPlayers;
 
 
     /////////////////////////////////////////////////////////////
@@ -135,4 +146,71 @@ bool Controller::saveGame(const QString &fileName)
     }
 
     return result;
+}
+
+QVariantMap Controller::getSettings()
+{
+    QVariantMap settingsMap;
+    QVariantMap settingsColors;
+    settingsColors.insert("numberColors", m_numberColors);
+    settingsColors.insert("firstColor", m_color1);
+    settingsColors.insert("secondColor", m_color2);
+    settingsMap.insert("Colors", settingsColors);
+
+        qDebug()<<settingsMap;
+    return settingsMap;
+
+}
+
+void Controller::setSettings(QString groupName, QVariantMap data)
+{
+//    if(numberColors < m_colors.size())
+
+    if(groupName == "Colors")
+    {
+        QString key;
+        QMapIterator<QString, QVariant> iterator( data );
+        while( iterator.hasNext() )
+        {
+            iterator.next();
+            key = iterator.key().trimmed();
+            if( !key.isEmpty() && !iterator.value().isNull() )
+                if(key == "numberColors")
+                    m_numberColors = iterator.value().toInt();
+                else if(key == "firstColor")
+                    m_color1 = iterator.value().toString();
+                else if(key == "secondColor")
+                    m_color2 = iterator.value().toString();
+
+        }
+    }
+
+}
+
+QStringList Controller::getAllColors(int i)
+{
+    QStringList result;
+    QString playerColor ;
+    if(i == 1)
+        playerColor = m_color1;
+    else if( i== 2)
+        playerColor = m_color2;
+    else {
+        return result;
+    }
+    for(int i=0; i < m_colors.size(); i++ )
+        if(m_colors.at(i) != playerColor)
+            result.append( m_colors.at(i) );
+
+    return result;
+}
+
+int Controller::getCountFirstColor()
+{
+    return m_myData->getNumberRectColor( m_color1 );
+}
+
+int Controller::getCountSecondColor()
+{
+    return m_myData->getNumberRectColor( m_color2 );
 }

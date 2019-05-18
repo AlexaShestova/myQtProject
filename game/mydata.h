@@ -10,6 +10,7 @@ class MyData : public QAbstractListModel
     Q_OBJECT
     Q_PROPERTY(int columns READ getColumns CONSTANT)
     Q_PROPERTY(int rows READ getRows CONSTANT)
+
 public:
     enum {
         IntRole = Qt::UserRole + 1,
@@ -31,14 +32,14 @@ public:
     void clearAll();
     void replaceData(int ind, QColor newColor);
     /*Q_INVOKABLE*/ void addItem (int i, const QColor &c);
-    void process(int ind, QColor cReplace);
+    void process(int ind, QString strColorReplace);
 
     QList<int> getAdjCells(int ind);
 
-    bool checkColorData(int ind, QColor color);
-    bool checkPole(QColor c1, QColor c2/*bool isFirstPlayer*/);
+    bool checkColorData(int ind, QString strColor);
+    bool checkPole(QColor strC1, QColor strC2/*bool isFirstPlayer*/);
 
-    int getNumberRectColor(QColor color);
+    int getNumberRectColor(QString strColor);
 
     QString getColorsData();
 

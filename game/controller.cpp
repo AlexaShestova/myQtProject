@@ -27,6 +27,7 @@ void Controller::startGame()
 {
     m_isFirstPlayer = true;
     emit isFirsPlayerChanged();
+
     m_myData->clearAll();
     for(int i = 0; i < m_myData->getColumns() * m_myData->getRows(); i++)
         //        for(int j = 0; j < N; j++)
@@ -49,6 +50,9 @@ void Controller::startGame()
     m_myData->replaceData( m_myData->getColumns()*m_myData->getRows() - 1, QColor( m_color2 ));
     m_myData->replaceData( m_myData->getColumns()*m_myData->getRows() - 2, QColor( m_color2 ));
     m_myData->replaceData( (m_myData->getRows()-1) * m_myData->getColumns() - 1, QColor( m_color2 ));
+
+    emit countFirstColorChanged();
+    emit countSecondColorChanged();
 }
 
 bool Controller::checkRect(int ind)
@@ -81,27 +85,34 @@ void Controller::process(int ind)
         m_myData->process(ind, m_color1);
 
         emit countFirstColorChanged();
+
     }
     else
     {
+
         m_myData->process(ind, m_color2);
 
         emit countSecondColorChanged();
     }
 
-    m_isFirstPlayer = !m_isFirstPlayer;
-    emit isFirsPlayerChanged();
-}
-
-bool Controller::checkPole()
-{
-    bool result = true;
-    if(m_isFirstPlayer)
-        result = m_myData->checkPole(m_color1, m_color2);
+    if(m_numberPlayers == 1)
+    {
+        move();
+    }
     else
     {
-        result = m_myData->checkPole(m_color2, m_color1);
+    m_isFirstPlayer = !m_isFirstPlayer;
+    emit isFirsPlayerChanged();
     }
+}
+
+bool Controller::checkField()
+{
+    bool result = true;
+
+    result = m_myData->checkField(m_color1, m_color2);
+    result = result && m_myData->checkField(m_color2, m_color1);
+
     return result;
 }
 
@@ -187,22 +198,18 @@ void Controller::setSettings(QString groupName, QVariantMap data)
 
 }
 
-QStringList Controller::getAllColors(int i)
+QStringList Controller::getAllColors()
 {
-    QStringList result;
-    QString playerColor ;
-    if(i == 1)
-        playerColor = m_color1;
-    else if( i== 2)
-        playerColor = m_color2;
-    else {
-        return result;
-    }
-    for(int i=0; i < m_colors.size(); i++ )
-        if(m_colors.at(i) != playerColor)
-            result.append( m_colors.at(i) );
+    return m_colors;
+}
 
-    return result;
+void Controller::move()
+{
+    QSet<int> rect = m_myData->getAvailableRect(m_color2, m_color1);
+    int randI = rand()% rect.size();
+    m_myData->process(rect.toList().at(randI), m_color2);
+
+    emit countSecondColorChanged();
 }
 
 int Controller::getCountFirstColor()

@@ -36,13 +36,13 @@ public:
 
     QList<int> getAdjCells(int ind);
 
-    bool checkColorData(int ind, QString strColor);
-    bool checkPole(QColor strC1, QColor strC2/*bool isFirstPlayer*/);
+    bool checkColorData(int ind, const QString &strColor);
+    bool checkField(const QString &strC1, const QString &strC2/*bool isFirstPlayer*/);
 
     int getNumberRectColor(QString strColor);
 
     QString getColorsData();
-
+    QSet<int> getAvailableRect(const QString &strFirstColor, const QString &strSecondColor);
 signals:
 
 

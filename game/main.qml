@@ -29,6 +29,7 @@ ApplicationWindow {
 //                    onTriggered: saveFileDialog.open()
                 }
                 MenuSeparator { }
+
                 Action {
                     text: qsTr("&Quit")
                     onTriggered: Qt.quit()
@@ -36,20 +37,20 @@ ApplicationWindow {
 
 
             }
-            Menu {
-                title: qsTr("&Settings")
-                Action {
-                    text: qsTr("&Game board")
-                    onTriggered:{
-                        settingsWindow.updateSettings();
-                        settingsWindow.visible = true;
-                    }
+            MenuBarItem{
+                text:  qsTr("Settings")
+                onTriggered: {
+                    settingsWindow.visible = true;
+                    settingsWindow.updateSettings();
                 }
-                Action { text: qsTr("&game difficulty") }
             }
+
             Menu {
                 title: qsTr("&Help")
-                Action { text: qsTr("&About") }
+                Action {
+                    text: qsTr("&About")
+                    onTriggered: dialogAbout.visible = true
+                }
             }
         }
     Component.onCompleted: {
@@ -150,11 +151,11 @@ ApplicationWindow {
                             {
                                 MyController.process(index);
 
-                                if(!MyController.checkPole())
+                                if(!MyController.checkField())
                                     dialog_gameOver.open();
                             }
                             else
-                                dialog_warning.open()//visible = true
+                                dialog_warning.visible = true
                         }
                     }
                 }
@@ -163,28 +164,35 @@ ApplicationWindow {
 
             }
         }
-        Dialog {
+        MessageDialog {
             id: dialog_warning
+            icon: StandardIcon.Warning
             title: "WARNING"
-//            standardButton: Dialog.Ok
-//            contentWidth: grid.width
+            text: "Select another rectangle "
 
-            Label{ text: "Выберите другое поле!" }
-
-            onAccepted: console.log("Ok clicked")
+            onAccepted: {
+                visible = false;
+            }
         }
 
-        Dialog {
+        MessageDialog {
             id: dialog_gameOver
-            title: "WARNING"
-//            standardButton: Dialog.Ok
-//            contentWidth: grid.width
 
-            Label{ text: "Game Over! "}
+            icon: StandardIcon.Critical
+            title: "Game Over"
+            text: {
+                var res =  "Game Over! ";
+                if(MyController.countFirstColor > MyController.countSecondColor)
+                res += "The first player won."
+                else if(MyController.countFirstColor < MyController.countSecondColor)
+                    res += "The second player won."
+                else
+                    res += "Tied!"
+                return res;
+            }
 
             onAccepted: {
                 MyController.startGame();
-                console.log("Ok clicked")
             }
         }
 //        FileDialog
@@ -231,6 +239,17 @@ ApplicationWindow {
             {
                 MyController.startGame();
             }
+        }
+
+    }
+
+    MessageDialog{
+        id: dialogAbout
+        title: "About"
+        text: "Author: Alexandra Shestova
+Year of release of the game: 2019"
+        onAccepted: {
+            visible = false;
         }
     }
 

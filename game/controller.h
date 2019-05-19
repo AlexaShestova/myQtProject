@@ -26,7 +26,7 @@ public:
     Q_INVOKABLE bool checkRect(int ind);
     Q_INVOKABLE void process(int ind);
 
-    Q_INVOKABLE bool checkPole();
+    Q_INVOKABLE bool checkField();
 
     Q_INVOKABLE QList<int> getCountRect();
 
@@ -37,7 +37,7 @@ public:
     Q_INVOKABLE QVariantMap getSettings();
 
     Q_INVOKABLE void setSettings(QString groupName, QVariantMap data);
-    Q_INVOKABLE QStringList getAllColors(int i);
+    Q_INVOKABLE QStringList getAllColors();
 
 signals:
     void isFirsPlayerChanged();
@@ -57,7 +57,11 @@ private:
     QString m_color2 = m_colors.at(1);
     int m_numberColors = 2;
 
-    int m_numberPlayers = 2;
+    //game mode
+    int m_numberPlayers = 1;
+
+    //
+    void move();
 };
 
 #endif // CONTROLLER_H

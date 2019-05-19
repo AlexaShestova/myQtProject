@@ -137,15 +137,14 @@ void MyData::process(int ind, QString strColorReplace)
 //    m_colorData.replace( (M-1) * N - 1, m_color2);
 //}
 
-bool MyData::checkColorData(int ind, QString strColor)
+bool MyData::checkColorData(int ind, const QString &strColor)
 {
     return m_colorData.at(ind) == QColor(strColor);
 }
 
-bool MyData::checkPole(QColor strC1, QColor strC2) // если хоть одна доступная клетка ??
+bool MyData::checkField(const QString& strC1, const QString& strC2)
 {
     bool result = false;
-    //   foreach(QColor aC, m_colorData)
     QColor c1(strC1);
     QColor c2(strC2);
     for(int i = 0; i < M*N; i++)
@@ -187,6 +186,30 @@ QString MyData::getColorsData()
         colorsData += c.name() + " ";
     }
     return colorsData;
+}
+
+QSet<int> MyData::getAvailableRect(const QString &strFirstColor, const QString &strSecondColor)
+{
+    QSet<int> res;
+    QColor firstCol(strFirstColor);
+    QColor secondCol(strSecondColor);
+    for(int i = 0; i < M*N; i++)
+    {
+        QColor aC = m_colorData.at(i);
+        if(aC == firstCol)
+        {
+            QList<int> adjCells = getAdjCells( i );
+
+            foreach(int a, adjCells)
+            {
+                if(m_colorData.at(a) != firstCol && m_colorData.at(a) != secondCol)
+                res.insert(a);
+            }
+        }
+    }
+
+    return res;
+
 }
 
 QList<int> MyData::getAdjCells(int ind)

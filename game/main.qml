@@ -14,7 +14,7 @@ ApplicationWindow {
                 title: qsTr("&Game")
                 Action {
                     text: qsTr("&New...")
-                    onTriggered: { MyController.startGame(); }
+                    onTriggered: { newGameWindow.visible = true; }
                 }
                 Action {
                     text: qsTr("&Open...")
@@ -231,6 +231,16 @@ ApplicationWindow {
 
 //            }
 //        }
+        NewGameDialog
+        {
+            id: newGameWindow
+            title: "New Game"
+            onAccepted:
+            {
+                MyController.startGame();
+            }
+        }
+
         SettingsDialog
         {
             id:settingsWindow

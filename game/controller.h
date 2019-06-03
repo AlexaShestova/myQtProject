@@ -2,24 +2,26 @@
 #define CONTROLLER_H
 
 #include "mydata.h"
+const QList<QString> LIST_COLORS={"yellow", "red", "green", "cyan", "magenta", "pink", "brown", "orange", "purple", "grey", "blue" };
 
 class Controller : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(bool isFirstPlayer READ getIsFirstPlayer NOTIFY isFirsPlayerChanged)
-
-    Q_PROPERTY(int size READ getSize CONSTANT)
+    Q_PROPERTY(bool isFirstPlayer READ getIsFirstPlayer NOTIFY isFirstPlayerChanged)
 
     Q_PROPERTY(int countFirstColor READ getCountFirstColor NOTIFY countFirstColorChanged)
     Q_PROPERTY(int countSecondColor READ getCountSecondColor NOTIFY countSecondColorChanged)
+
+    Q_PROPERTY(int numberPlayers WRITE setNumberPlayers)
 public:
     Controller(MyData *myData, QObject *parent = nullptr);
 
     bool getIsFirstPlayer() const;
-    int getSize() const;
 
     int getCountFirstColor();
     int getCountSecondColor();
+
+    void setNumberPlayers(int numberPlayers);
 
     Q_INVOKABLE void startGame();
 
@@ -40,7 +42,7 @@ public:
     Q_INVOKABLE QStringList getAllColors();
 
 signals:
-    void isFirsPlayerChanged();
+    void isFirstPlayerChanged();
     void countFirstColorChanged();
     void countSecondColorChanged();
 
@@ -52,13 +54,12 @@ private:
     bool m_isFirstPlayer = true;
 
     //settings
-    const QList<QString> m_colors={"yellow", "red", "green", "cyan", "magenta", "pink", "brown", "orange", "purple", "grey", "blue" };
-    QString m_color1 = m_colors.at(0);
-    QString m_color2 = m_colors.at(1);
+    QString m_color1 = LIST_COLORS.at(0);
+    QString m_color2 = LIST_COLORS.at(1);
     int m_numberColors = 2;
 
     //game mode
-    int m_numberPlayers = 1;
+    int m_numberPlayers = 2;
 
     //
     void move();

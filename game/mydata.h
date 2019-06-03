@@ -22,7 +22,7 @@ public:
     QVariant data(const QModelIndex &index, int role) const Q_DECL_OVERRIDE;
 
     QMap<int, QVariant> itemData(const QModelIndex &index) const Q_DECL_OVERRIDE;
-    bool setData(const QModelIndex &index, const QVariant &value, int role) Q_DECL_OVERRIDE;
+//    bool setData(const QModelIndex &index, const QVariant &value, int role) Q_DECL_OVERRIDE;
 
 //    void setData(const QModelIndex &index, int role) const Q_DECL_OVERRIDE;
 
@@ -30,6 +30,8 @@ public:
     int getRows() const;
 
     void clearAll();
+    void initializeData(QList<QString> listColors);
+    void setCountColumnsRows(int newColumns, int newRows);
     void replaceData(int ind, QColor newColor);
     /*Q_INVOKABLE*/ void addItem (int i, const QColor &c);
     void process(int ind, QString strColorReplace);
@@ -52,8 +54,8 @@ private:
     QList<int> m_intData;
     QList<QColor> m_colorData;
     QHash<int, QByteArray> m_roles;
-    int M=5;
-    int N=5;
+    int m_columns=5;
+    int m_rows=5;
 
 };
 

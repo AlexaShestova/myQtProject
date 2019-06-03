@@ -13,11 +13,6 @@ Controller::Controller(MyData *myData, QObject *parent):
 
 }
 
-int Controller::getSize() const
-{
-    return 5;
-}
-
 bool Controller::getIsFirstPlayer() const
 {
     return m_isFirstPlayer;
@@ -26,7 +21,7 @@ bool Controller::getIsFirstPlayer() const
 void Controller::startGame()
 {
     m_isFirstPlayer = true;
-    emit isFirsPlayerChanged();
+    emit isFirstPlayerChanged();
 
     m_myData->clearAll();
     for(int i = 0; i < m_myData->getColumns() * m_myData->getRows(); i++)
@@ -35,12 +30,12 @@ void Controller::startGame()
         int randI = rand() % (m_numberColors + 2);
 
 
-        while( m_colors.at(randI) == m_color1 || m_colors.at(randI) == m_color2 )
+        while( LIST_COLORS.at(randI) == m_color1 || LIST_COLORS.at(randI) == m_color2 )
         {
             randI = rand() % (m_numberColors + 2);
 
         }
-        QColor c(m_colors.at(randI));
+        QColor c(LIST_COLORS.at(randI));
         m_myData->addItem(i, c);
     }
 
@@ -54,6 +49,34 @@ void Controller::startGame()
     emit countFirstColorChanged();
     emit countSecondColorChanged();
 }
+
+//void Controller::startGame()
+//{
+//    m_isFirstPlayer = true;
+//    emit isFirstPlayerChanged();
+//    m_myData->clearAll();
+//    QList<QString> listColors;
+
+//    for(int i = 0, j = 0; j < LIST_COLORS.size() && i < m_numberColors; j++)
+//        //        for(int j = 0; j < N; j++)
+//    {
+//        if( LIST_COLORS.at(j) != m_color1 && LIST_COLORS.at(j) != m_color2 )
+//        {
+//            listColors.append(LIST_COLORS.at(j));
+//            i++;
+//        }
+//    }
+//    m_myData->initializeData(listColors);
+//    m_myData->replaceData( 0, QColor( m_color1 ));
+//    m_myData->replaceData( 1, QColor( m_color1 ));
+//    m_myData->replaceData( m_myData->getColumns(), QColor( m_color1 ));
+//    m_myData->replaceData( m_myData->getColumns()*m_myData->getRows() - 1, QColor( m_color2 ));
+//    m_myData->replaceData( m_myData->getColumns()*m_myData->getRows() - 2, QColor( m_color2 ));
+//    m_myData->replaceData( (m_myData->getRows()-1) * m_myData->getColumns() - 1, QColor( m_color2 ));
+
+//    emit countFirstColorChanged();
+//    emit countSecondColorChanged();
+//}
 
 bool Controller::checkRect(int ind)
 {
@@ -102,7 +125,7 @@ void Controller::process(int ind)
     else
     {
     m_isFirstPlayer = !m_isFirstPlayer;
-    emit isFirsPlayerChanged();
+    emit isFirstPlayerChanged();
     }
 }
 
@@ -175,7 +198,7 @@ QVariantMap Controller::getSettings()
 
 void Controller::setSettings(QString groupName, QVariantMap data)
 {
-//    if(numberColors < m_colors.size())
+//    if(numberColors < LIST_COLORS.size())
 
     if(groupName == "Colors")
     {
@@ -195,12 +218,13 @@ void Controller::setSettings(QString groupName, QVariantMap data)
 
         }
     }
+//    if(groupName == "")
 
 }
 
 QStringList Controller::getAllColors()
 {
-    return m_colors;
+    return LIST_COLORS;
 }
 
 void Controller::move()
@@ -220,4 +244,14 @@ int Controller::getCountFirstColor()
 int Controller::getCountSecondColor()
 {
     return m_myData->getNumberRectColor( m_color2 );
+}
+
+void Controller::setNumberPlayers(int numberPlayers)
+{
+    if( numberPlayers == 1 || numberPlayers == 2)
+        m_numberPlayers = numberPlayers;
+    else {
+        qWarning() << "Controller : invalid parameters : numberPlayers = " << numberPlayers;
+        return; // ERROR
+    }
 }

@@ -10,49 +10,49 @@ ApplicationWindow {
     title: qsTr("My Game")
 
     menuBar: MenuBar {
-            Menu {
-                title: qsTr("&Game")
-                Action {
-                    text: qsTr("&New...")
-                    onTriggered: { newGameWindow.visible = true; }
-                }
-                Action {
-                    text: qsTr("&Open...")
-//                onTriggered: openFileDialog.open()
-                }
-                Action {
-                    text: qsTr("&Save")
-                    onTriggered: saveGame();
-                }
-                Action {
-                    text: qsTr("Save &As...")
-//                    onTriggered: saveFileDialog.open()
-                }
-                MenuSeparator { }
-
-                Action {
-                    text: qsTr("&Quit")
-                    onTriggered: Qt.quit()
-                }
-
-
+        Menu {
+            title: qsTr("&Game")
+            Action {
+                text: qsTr("&New...")
+                onTriggered: { newGameWindow.visible = true; }
             }
-            MenuBarItem{
-                text:  qsTr("Settings")
-                onTriggered: {
-                    settingsWindow.visible = true;
-                    settingsWindow.updateSettings();
-                }
+            Action {
+                text: qsTr("&Open...")
+                //                onTriggered: openFileDialog.open()
+            }
+            Action {
+                text: qsTr("&Save")
+                onTriggered: saveGame();
+            }
+            Action {
+                text: qsTr("Save &As...")
+                //                    onTriggered: saveFileDialog.open()
+            }
+            MenuSeparator { }
+
+            Action {
+                text: qsTr("&Quit")
+                onTriggered: Qt.quit()
             }
 
-            Menu {
-                title: qsTr("&Help")
-                Action {
-                    text: qsTr("&About")
-                    onTriggered: dialogAbout.visible = true
-                }
+
+        }
+        MenuBarItem{
+            text:  qsTr("Settings")
+            onTriggered: {
+                settingsWindow.visible = true;
+                settingsWindow.updateSettings();
             }
         }
+
+        Menu {
+            title: qsTr("&Help")
+            Action {
+                text: qsTr("&About")
+                onTriggered: dialogAbout.visible = true
+            }
+        }
+    }
     Component.onCompleted: {
         //console.log(MyData.size)
     }
@@ -65,19 +65,19 @@ ApplicationWindow {
         MyController.saveGame(fileName)//File()
     }
 
-//    menuBar: MenuBar {
-//        Menu {
-//            title: "Game"
-//            MenuItem { text: "newGame" }
-//            MenuItem { text: "loadGame" }
-//        }
+    //    menuBar: MenuBar {
+    //        Menu {
+    //            title: "Game"
+    //            MenuItem { text: "newGame" }
+    //            MenuItem { text: "loadGame" }
+    //        }
 
-//        Menu {
-//            title: "Settings"
-//            MenuItem { text: "Colors" }
-//            MenuItem { text: "Players" }
-//        }
-//    }
+    //        Menu {
+    //            title: "Settings"
+    //            MenuItem { text: "Colors" }
+    //            MenuItem { text: "Players" }
+    //        }
+    //    }
 
     Item {
         id: root
@@ -103,7 +103,7 @@ ApplicationWindow {
             anchors.top: label.bottom
             font.pointSize: 20
             horizontalAlignment: Text.AlignHCenter
-//            color: (MyController.isFirstPlayer ) ? "yellow" : "blue"
+            //            color: (MyController.isFirstPlayer ) ? "yellow" : "blue"
         }
 
         Grid {
@@ -131,8 +131,6 @@ ApplicationWindow {
                                 duration: 500
                             }
                         }
-
-
                     }
                     width: grid.width / MyData.columns
                     height: grid.height / MyData.rows
@@ -142,6 +140,22 @@ ApplicationWindow {
                         anchors.centerIn: parent
                         text: IntData
                     }
+                    Rectangle
+                    {
+                        id: warningRect
+                        color: "transparent"
+                        anchors.fill: parent
+
+                        Behavior on color{
+                            ColorAnimation{
+                                from: "red"
+                                to: "transparent"
+                                duration: 700
+                                loops: 3
+                            }
+                        }
+                    }
+
                     MouseArea {
                         id: mouseArea
                         anchors.fill: parent
@@ -155,7 +169,11 @@ ApplicationWindow {
                                     dialog_gameOver.open();
                             }
                             else
-                                dialog_warning.visible = true
+                            {
+                                //                                warningRect.visible = true
+                                warningRect.color = "red"
+                                //                                dialog_warning.visible = true
+                            }
                         }
                     }
                 }
@@ -183,7 +201,7 @@ ApplicationWindow {
             text: {
                 var res =  "Game Over! ";
                 if(MyController.countFirstColor > MyController.countSecondColor)
-                res += "The first player won."
+                    res += "The first player won."
                 else if(MyController.countFirstColor < MyController.countSecondColor)
                     res += "The second player won."
                 else
@@ -195,42 +213,42 @@ ApplicationWindow {
                 MyController.startGame();
             }
         }
-//        FileDialog
-//        {
-//            id: openFileDialog
-////            visible: false
-////            modality: Qt.WindowModal
-////            selectMultiple: false
-////            selectExisting: true
-////            selectFolder: false
-////            nameFilters: [ "Font files (*.txt)" ]
-////            title: qsTr("Select file")
+        //        FileDialog
+        //        {
+        //            id: openFileDialog
+        ////            visible: false
+        ////            modality: Qt.WindowModal
+        ////            selectMultiple: false
+        ////            selectExisting: true
+        ////            selectFolder: false
+        ////            nameFilters: [ "Font files (*.txt)" ]
+        ////            title: qsTr("Select file")
 
-////            onAccepted:
-////            {
-////                console.log( "open file accepted" )
-////                fileUrl.toString()
+        ////            onAccepted:
+        ////            {
+        ////                console.log( "open file accepted" )
+        ////                fileUrl.toString()
 
-////            }
-//        }
-//        FileDialog
-//        {
-//            id: saveFileDialog
-////            visible: false
-//            modality: Qt.WindowModal
-//            selectMultiple: false
-//            selectExisting: true
-//            selectFolder: false
-//            nameFilters: [ "Font files (*.txt)" ]
-//            title: qsTr("Select fils")
+        ////            }
+        //        }
+        //        FileDialog
+        //        {
+        //            id: saveFileDialog
+        ////            visible: false
+        //            modality: Qt.WindowModal
+        //            selectMultiple: false
+        //            selectExisting: true
+        //            selectFolder: false
+        //            nameFilters: [ "Font files (*.txt)" ]
+        //            title: qsTr("Select fils")
 
-//            onAccepted:
-//            {
-//                console.log( "save file accepted" )
-//                fileUrl.toString()
+        //            onAccepted:
+        //            {
+        //                console.log( "save file accepted" )
+        //                fileUrl.toString()
 
-//            }
-//        }
+        //            }
+        //        }
         NewGameDialog
         {
             id: newGameWindow

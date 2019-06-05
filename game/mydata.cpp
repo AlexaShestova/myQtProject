@@ -92,15 +92,15 @@ void MyData::initializeData(QList<QString> listColors)
         QColor c(listColors.at(randI));
         addItem(i, c);
     }
-    QModelIndex index = createIndex(0,0);
-    QModelIndex index_ = createIndex(m_columns * m_rows,0);
-    emit dataChanged(index, index_, QVector<int>() << ColorRole);
+//    QModelIndex index = createIndex(0,0);
+//    QModelIndex index_ = createIndex(m_columns * m_rows,0);
+//    emit dataChanged(index, index_, QVector<int>() << ColorRole);
 //    emit endInsertRows();
 }
 
 void MyData::setCountColumnsRows(int newColumns, int newRows)
 {
-    clearAll();
+//    clearAll();
     m_columns = newColumns;
     m_rows = newRows;
 //    initializeData();
@@ -138,6 +138,19 @@ void MyData::process(int ind, QString strColorReplace)
 
     QModelIndex index = createIndex(ind,0);
     emit dataChanged(index, index, QVector<int>() << ColorRole);
+}
+
+void MyData::updateData(QJsonObject &obj)
+{
+    setCountColumnsRows(obj.value("columns").toInt(), obj["rows"].toInt());
+    QStringList colorsList = obj.value("colorsData").toString().split(QRegExp("\\s+"), QString::SkipEmptyParts);
+    for (int i = 0; i < colorsList.length(); i++) {
+        replaceData(i, QColor(colorsList.at(i)));
+        m_colorData.append(QColor(colorsList.at(i)));
+    }
+//    QModelIndex index = createIndex(0,0);
+//    QModelIndex index_ = createIndex(m_columns * m_rows,0);
+//    emit dataChanged(index, index_, QVector<int>() << ColorRole);
 }
 
 //void MyData::startGame()

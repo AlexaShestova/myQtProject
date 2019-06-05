@@ -4,6 +4,7 @@
 #include <QString>
 #include <QColor>
 #include <QAbstractListModel>
+#include <QJsonObject>
 
 class MyData : public QAbstractListModel
 {
@@ -35,6 +36,7 @@ public:
     void replaceData(int ind, QColor newColor);
     /*Q_INVOKABLE*/ void addItem (int i, const QColor &c);
     void process(int ind, QString strColorReplace);
+    void updateData(QJsonObject &obj);
 
     QList<int> getAdjCells(int ind);
 

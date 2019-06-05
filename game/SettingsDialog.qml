@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import QtQuick.Controls 1.0
 import QtQuick.Window 2.0
+import QtQuick.Dialogs 1.3
 
 Window
 {
@@ -87,7 +88,7 @@ Window
             id: labelFirstPlayerColor
 
             anchors.left: parent.left
-            anchors.top: labelCountColors.top
+            anchors.top: spinBoxCountColor.bottom
 
             text: qsTr("First player color:")
             anchors.topMargin: settingsRoot.marginValue / 2
@@ -155,14 +156,18 @@ Window
 
         onClicked:
         {
+            if(firstPlayerColor.currentText == secondPlayerColor.currentText)
+                messageDialog.visible = true;
+            else
+            {
+                var settingsColor = {   "numberColors" : spinBoxCountColor.value,
+                    "firstColor" : firstPlayerColor.currentText,
+                    "secondColor" : secondPlayerColor.currentText};
+                MyController.setSettings( "Colors", settingsColor );
 
-            var settingsColor = {   "numberColors" : spinBoxCountColor.value,
-                                    "firstColor" : firstPlayerColor.currentText,
-                                    "secondColor" : secondPlayerColor.currentText};
-            MyController.setSettings( "Colors", settingsColor );
-
-            settingsRoot.visible = false;
-            settingsRoot.accepted();
+                settingsRoot.visible = false;
+                settingsRoot.accepted();
+            }
         }
     }
 
@@ -186,5 +191,16 @@ Window
         }
 
         onClicked: settingsRoot.visible = false
+    }
+    MessageDialog
+    {
+        id: messageDialog
+        icon: StandardIcon.Critical
+        title: "Warning"
+        text: "Choose a different color for the second player"
+        onAccepted: {
+            visible = false;
+        }
+        //        Component.onCompleted: visible = true
     }
 }

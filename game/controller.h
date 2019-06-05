@@ -9,6 +9,9 @@ class Controller : public QObject
     Q_OBJECT
     Q_PROPERTY(bool isFirstPlayer READ getIsFirstPlayer NOTIFY isFirstPlayerChanged)
 
+    Q_PROPERTY(QColor firstColor READ getFirstColor NOTIFY firstColorChanged )
+    Q_PROPERTY(QColor secondColor READ getSecondColor NOTIFY secondColorChanged )
+
     Q_PROPERTY(int countFirstColor READ getCountFirstColor NOTIFY countFirstColorChanged)
     Q_PROPERTY(int countSecondColor READ getCountSecondColor NOTIFY countSecondColorChanged)
 
@@ -17,7 +20,8 @@ public:
     Controller(MyData *myData, QObject *parent = nullptr);
 
     bool getIsFirstPlayer() const;
-
+    QColor getFirstColor() const;
+    QColor getSecondColor() const;
     int getCountFirstColor();
     int getCountSecondColor();
 
@@ -32,8 +36,9 @@ public:
 
     Q_INVOKABLE QList<int> getCountRect();
 
-    Q_INVOKABLE bool loadGame( const QString & fileName );
+    Q_INVOKABLE bool loadGame(QString fileName );
     Q_INVOKABLE bool saveGame( const QString & fileName );
+    Q_INVOKABLE bool saveGameAs( const QString &fullFileName );
 
 
     Q_INVOKABLE QVariantMap getSettings();
@@ -43,6 +48,8 @@ public:
 
 signals:
     void isFirstPlayerChanged();
+    void firstColorChanged();
+    void secondColorChanged();
     void countFirstColorChanged();
     void countSecondColorChanged();
 

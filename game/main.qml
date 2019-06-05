@@ -1,7 +1,8 @@
 import QtQuick 2.8
 import QtQuick.Controls 2.5
 import QtQuick.Dialogs 1.2
-
+//import QtQuick 2.2
+//  import QtQuick.Dialogs 1.0
 ApplicationWindow {
     id: window
     visible: true
@@ -18,7 +19,7 @@ ApplicationWindow {
             }
             Action {
                 text: qsTr("&Open...")
-                //                onTriggered: openFileDialog.open()
+                onTriggered: openFileDialog.open()
             }
             Action {
                 text: qsTr("&Save")
@@ -26,7 +27,7 @@ ApplicationWindow {
             }
             Action {
                 text: qsTr("Save &As...")
-                //                    onTriggered: saveFileDialog.open()
+                onTriggered: saveFileDialog.open()
             }
             MenuSeparator { }
 
@@ -92,7 +93,7 @@ ApplicationWindow {
             anchors.top: root.top
             font.pointSize: 30
             horizontalAlignment: (MyController.isFirstPlayer ) ? Text.AlignLeft : Text.AlignRight
-            color: (MyController.isFirstPlayer ) ? "yellow" : "blue"
+            color: (MyController.isFirstPlayer ) ? MyController.firstColor : MyController.secondColor
         }
 
         Text {
@@ -213,42 +214,45 @@ ApplicationWindow {
                 MyController.startGame();
             }
         }
-        //        FileDialog
-        //        {
-        //            id: openFileDialog
-        ////            visible: false
-        ////            modality: Qt.WindowModal
-        ////            selectMultiple: false
-        ////            selectExisting: true
-        ////            selectFolder: false
-        ////            nameFilters: [ "Font files (*.txt)" ]
-        ////            title: qsTr("Select file")
+        FileDialog
+        {
+            id: openFileDialog
+//            visible: false
+//            modality: Qt.WindowModal
+//            selectMultiple: false
+//            selectExisting: true
+//            selectFolder: false
+            nameFilters: [ "Font files (*.json)" ]
+            title: qsTr("Select file")
 
-        ////            onAccepted:
-        ////            {
-        ////                console.log( "open file accepted" )
-        ////                fileUrl.toString()
+            onAccepted:
+            {
+                var path = openFileDialog.fileUrl.toString();
+                path = path.replace(/^(file:\/{3})/,""); //remove <file:///> from path
+                console.log("open file accepted: You chose: " + path)
 
-        ////            }
-        //        }
-        //        FileDialog
-        //        {
-        //            id: saveFileDialog
-        ////            visible: false
-        //            modality: Qt.WindowModal
-        //            selectMultiple: false
-        //            selectExisting: true
-        //            selectFolder: false
-        //            nameFilters: [ "Font files (*.txt)" ]
-        //            title: qsTr("Select fils")
+                MyController.loadGame(path);
+            }
+        }
 
-        //            onAccepted:
-        //            {
-        //                console.log( "save file accepted" )
-        //                fileUrl.toString()
+        FileDialog {
+              id: saveFileDialog
+              title: qsTr("Select file")
+//              selectMultiple: false
+//              folder: shortcuts.home
+              nameFilters: [ "Font files (*.json)" ]
+              onAccepted: {
+                  var path = saveFileDialog.fileUrl.toString();
+                  path = path.replace(/^(file:\/{3})/,""); //remove <file:///> from path
+                  console.log("save file accepted: You chose: " + path)
 
-        //            }
-        //        }
+                  MyController.saveGameAs(path);
+              }
+              onRejected: {
+                  console.log("saveFileDialog: Canceled")
+              }
+//              Component.onCompleted: visible = true
+          }
         NewGameDialog
         {
             id: newGameWindow

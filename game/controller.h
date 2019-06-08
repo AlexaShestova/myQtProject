@@ -2,7 +2,9 @@
 #define CONTROLLER_H
 
 #include "mydata.h"
+#include <QPair>
 const QList<QString> LIST_COLORS={"yellow", "red", "green", "cyan", "magenta", "pink", "brown", "orange", "purple", "grey", "blue" };
+
 
 class Controller : public QObject
 {
@@ -57,7 +59,8 @@ public slots:
 
 private:
     MyData * m_myData;
-
+    QList<QPair<int,int>> m_listSize;
+    int m_fieldSize = 0;
     bool m_isFirstPlayer = true;
 
     //settings

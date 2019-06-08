@@ -6,8 +6,8 @@ import QtQuick.Dialogs 1.2
 ApplicationWindow {
     id: window
     visible: true
-    width: 640
-    height: 720
+    width: 1024
+    height: 790
     title: qsTr("My Game")
 
     menuBar: MenuBar {
@@ -136,11 +136,11 @@ ApplicationWindow {
                     width: grid.width / MyData.columns
                     height: grid.height / MyData.rows
                     color: ColorData
-                    Text {
-                        font.pointSize: 30
-                        anchors.centerIn: parent
-                        text: IntData
-                    }
+//                    Text {
+//                        font.pointSize: 30
+//                        anchors.centerIn: parent
+//                        text: IntData
+//                    }
                     Rectangle
                     {
                         id: warningRect

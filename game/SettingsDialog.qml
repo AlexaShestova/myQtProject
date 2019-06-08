@@ -29,24 +29,30 @@ Window
                 spinBoxCountColor.value = settings["Colors"]["numberColors"];
             }
 
-            if( "firstColor" in settings )
+            if( "firstColor" in settings["Colors"] )
             {
                 firstPlayerColor.currentIndex = firstPlayerColor.find( settings["Colors"]["firstColor"] );
             }
 
-            if( "secondColor" in settings )
+            if( "secondColor" in settings["Colors"] )
             {
                 secondPlayerColor.currentIndex = secondPlayerColor.find( settings["Colors"]["secondColor"] );
             }
 
         }
+        if( "Field" in settings )
+        {
+            if( "fieldSize" in settings["Field"] )
+            {
+                secondPlayerColor.currentIndex = settings["Field"]["fieldSize"] + 1;
+            }
+        }
     }
 
     GroupBox
     {
-        id: groupBoxPlayingField
+        id: groupBoxSettingsColors
 
-        width: parent.width - 2 * settingsRoot.marginValue
         height: 190
 
         anchors.top: parent.top
@@ -55,7 +61,7 @@ Window
         anchors.leftMargin: settingsRoot.marginValue
         anchors.right: parent.right
         anchors.rightMargin: settingsRoot.marginValue
-        title: qsTr("Playing field")
+        title: qsTr("Settings colors")
 
         Label
         {
@@ -105,7 +111,7 @@ Window
             anchors.left: parent.left
             anchors.top: labelFirstPlayerColor.bottom
 
-            model: MyController.getAllColors(1)
+            model: MyController.getAllColors()
         }
         //second player color
         Label
@@ -130,7 +136,48 @@ Window
             anchors.left: parent.left
             anchors.top: labelSecondPlayerColor.bottom
 
-            model: MyController.getAllColors(2)
+            model: MyController.getAllColors()
+        }
+
+    }
+
+    GroupBox
+    {
+        id: groupBoxSettingsField
+
+        height: 105
+
+        anchors.top: groupBoxSettingsColors.bottom
+        anchors.topMargin: settingsRoot.marginValue
+        anchors.left: parent.left
+        anchors.leftMargin: settingsRoot.marginValue
+        anchors.right: parent.right
+        anchors.rightMargin: settingsRoot.marginValue
+        title: qsTr("Settings field")
+
+        Label
+        {
+            id: labelFieldSize
+
+            anchors.left: parent.left
+            anchors.top: parent.top
+
+            text: qsTr("Fiel size:")
+            anchors.topMargin: settingsRoot.marginValue / 2
+            anchors.leftMargin: settingsRoot.marginValue / 2
+        }
+        ComboBox
+        {
+            id: fieldSize
+            anchors.right: parent.right
+            anchors.rightMargin: settingsRoot.marginValue / 2
+            anchors.leftMargin: settingsRoot.marginValue / 2
+            anchors.topMargin: settingsRoot.marginValue / 2
+
+            anchors.left: parent.left
+            anchors.top: labelFieldSize.bottom
+
+            model: ["small", "middle", "large", "huge"]
         }
 
     }
@@ -164,7 +211,8 @@ Window
                     "firstColor" : firstPlayerColor.currentText,
                     "secondColor" : secondPlayerColor.currentText};
                 MyController.setSettings( "Colors", settingsColor );
-
+                var settingsField = {  "fieldSize": fieldSize.currentIndex};
+                MyController.setSettings( "Field", settingsField );
                 settingsRoot.visible = false;
                 settingsRoot.accepted();
             }

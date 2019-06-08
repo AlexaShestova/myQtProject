@@ -9,8 +9,8 @@
 class MyData : public QAbstractListModel
 {
     Q_OBJECT
-    Q_PROPERTY(int columns READ getColumns CONSTANT)
-    Q_PROPERTY(int rows READ getRows CONSTANT)
+    Q_PROPERTY(int columns READ getColumns NOTIFY columnsChanged)
+    Q_PROPERTY(int rows READ getRows NOTIFY rowsChanged)
 
 public:
     enum {
@@ -26,6 +26,8 @@ public:
 //    bool setData(const QModelIndex &index, const QVariant &value, int role) Q_DECL_OVERRIDE;
 
 //    void setData(const QModelIndex &index, int role) const Q_DECL_OVERRIDE;
+//    bool insertRows(int position, int rows, const QModelIndex &index = QModelIndex()) Q_DECL_OVERRIDE;
+//    bool removeRows(int position, int rows, const QModelIndex &parent) Q_DECL_OVERRIDE;
 
     int getColumns() const;
     int getRows() const;
@@ -48,7 +50,8 @@ public:
     QString getColorsData();
     QSet<int> getAvailableRect(const QString &strFirstColor, const QString &strSecondColor);
 signals:
-
+    void columnsChanged();
+    void rowsChanged();
 
 public slots:
 

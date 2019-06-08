@@ -13,7 +13,9 @@ MyData::MyData(int m, int n, QObject *parent) :
 
 int MyData::rowCount(const QModelIndex &parent) const
 {
-    return m_intData.count();
+    if (parent.isValid())
+        return 0;
+    return m_colorData.count();
 }
 
 QHash<int, QByteArray> MyData::roleNames() const
@@ -23,6 +25,8 @@ QHash<int, QByteArray> MyData::roleNames() const
 
 QVariant MyData::data(const QModelIndex &index, int role) const
 {
+    if (index.row() < 0 || index.row() > m_colorData.count())
+            return QVariant();
     if(role == IntRole) {
         return m_intData.at(index.row());
 
@@ -35,7 +39,6 @@ QVariant MyData::data(const QModelIndex &index, int role) const
 
 QMap<int, QVariant> MyData::itemData(const QModelIndex &index) const
 {
-    //    return
     QMap<int, QVariant> Data;
     Data.insert(IntRole, m_intData.at(index.row()));
     Data.insert(ColorRole, m_colorData.at(index.row()));
@@ -67,6 +70,30 @@ QMap<int, QVariant> MyData::itemData(const QModelIndex &index) const
 //    return true;
 //}
 
+//bool MyData::insertRows(int position, int rows, const QModelIndex &parent)
+//{
+//    beginInsertRows(QModelIndex(), position, position+rows-1);
+
+//    for (int row = 0; row < rows; ++row) {
+//        m_colorData.insert(position, "black");
+//    }
+
+//    endInsertRows();
+//    return true;
+//}
+
+//bool MyData::removeRows(int position, int rows, const QModelIndex &parent)
+// {
+//     beginRemoveRows(QModelIndex(), position, position+rows-1);
+
+//     for (int row = 0; row < rows; ++row) {
+//         m_colorData.removeAt(position);
+//     }
+
+//     endRemoveRows();
+//     return true;
+// }
+
 int MyData::getColumns() const
 {
     return m_columns;
@@ -79,31 +106,32 @@ int MyData::getRows() const
 
 void MyData::clearAll()
 {
+    beginResetModel();
     m_intData.clear();
     m_colorData.clear();
+    endResetModel();
 }
 
 void MyData::initializeData(QList<QString> listColors)
 {
-//    emit beginInsertRows(QModelIndex(), /*m_colorData.size()*/0, m_colorData.size());
+    clearAll();
+
+    emit beginInsertRows(QModelIndex(), 0, m_columns * m_rows - 1);
     for(int i = 0; i < m_columns * m_rows; i++)
     {
         int randI = rand() % listColors.size();
         QColor c(listColors.at(randI));
-        addItem(i, c);
+        m_colorData.append(c);
     }
-//    QModelIndex index = createIndex(0,0);
-//    QModelIndex index_ = createIndex(m_columns * m_rows,0);
-//    emit dataChanged(index, index_, QVector<int>() << ColorRole);
-//    emit endInsertRows();
+    emit endInsertRows();
 }
 
 void MyData::setCountColumnsRows(int newColumns, int newRows)
 {
-//    clearAll();
     m_columns = newColumns;
     m_rows = newRows;
-//    initializeData();
+    emit columnsChanged();
+    emit rowsChanged();
 }
 
 void MyData::replaceData(int ind, QColor newColor)
@@ -144,34 +172,13 @@ void MyData::updateData(QJsonObject &obj)
 {
     setCountColumnsRows(obj.value("columns").toInt(), obj["rows"].toInt());
     QStringList colorsList = obj.value("colorsData").toString().split(QRegExp("\\s+"), QString::SkipEmptyParts);
+    clearAll();
+    emit beginInsertRows(QModelIndex(), 0, m_columns * m_rows - 1);
     for (int i = 0; i < colorsList.length(); i++) {
-        replaceData(i, QColor(colorsList.at(i)));
-        m_colorData.append(QColor(colorsList.at(i)));
+        m_colorData.append(colorsList.at(i));
     }
-//    QModelIndex index = createIndex(0,0);
-//    QModelIndex index_ = createIndex(m_columns * m_rows,0);
-//    emit dataChanged(index, index_, QVector<int>() << ColorRole);
+    emit endInsertRows();
 }
-
-//void MyData::startGame()
-//{
-//    m_intData.clear();
-//    m_colorData.clear();
-//    for(int i = 0; i < m_columns; i++)
-//        for(int j = 0; j < m_rows; j++)
-//        {
-//            int randI = rand()%(m_colors.size()-2) + 1;
-//            QColor c(m_colors.at(randI));
-//            addItem(i*m_columns + j, c);
-//        }
-
-//    m_colorData.replace( 0, m_color1);
-//    m_colorData.replace( 1, m_color1);
-//    m_colorData.replace( m_columns, m_color1);
-//    m_colorData.replace( m_columns*m_rows - 1, m_color2);
-//    m_colorData.replace( m_columns*m_rows - 2, m_color2);
-//    m_colorData.replace( (m_columns-1) * m_rows - 1, m_color2);
-//}
 
 bool MyData::checkColorData(int ind, const QString &strColor)
 {
@@ -264,16 +271,3 @@ QList<int> MyData::getAdjCells(int ind)
 
     return adjCells;
 }
-
-//void MyData::checkRect(int ind/*, bool isFirstPlayer*/)
-//{
-//    if(isFirstPlayer)
-
-//    else
-//        return m_colorData.at(ind) != m_color1 && m_colorData.at(ind) != m_color2;
-//}
-
-//int MyData::getM()
-//{
-//    return m_columns;
-//}

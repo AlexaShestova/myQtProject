@@ -12,10 +12,10 @@ Controller::Controller(MyData *myData, QObject *parent):
     m_myData(myData),
     QObject (parent)
 {
-    m_listSize.append( qMakePair(5, 5) );
+    m_listSize.append( qMakePair(5, 10) );
     m_listSize.append( qMakePair(10, 10) );
+    m_listSize.append( qMakePair(15, 15) );
     m_listSize.append( qMakePair(20, 20) );
-    m_listSize.append( qMakePair(40, 40) );
 
 }
 
@@ -122,13 +122,13 @@ void Controller::process(int ind)
 {
     if(m_isFirstPlayer)
     {
-        m_myData->process(ind, m_color1);
+        m_myData->process(ind, m_color1, 1);
 
         emit countFirstColorChanged();
     }
     else
     {
-        m_myData->process(ind, m_color2);
+        m_myData->process(ind, m_color2, 1);
 
         emit countSecondColorChanged();
     }
@@ -179,6 +179,7 @@ bool Controller::loadGame(QString fileName)
         m_color1 = obj.value("color1").toString();
         m_color2 = obj.value("color2").toString();
         m_numberPlayers = obj.value("numberPlayers").toInt();
+        m_level = obj.value("level").toInt();
         emit isFirstPlayerChanged();
         emit countFirstColorChanged();
         emit countSecondColorChanged();
@@ -213,6 +214,7 @@ bool Controller::saveGameAs(const QString &fullFileName)
     obj["numberPlayers"] = m_numberPlayers;
     obj["color1"] = m_color1;
     obj["color2"] = m_color2;
+    obj["level"] = m_level;
     /////////////////////////////////////////////////////////////
 
     QFile file( fullFileName );
@@ -246,6 +248,7 @@ QVariantMap Controller::getSettings()
 
     QVariantMap settingsField;
     settingsField.insert("fieldSize", m_fieldSize);
+    settingsField.insert("level", m_level);
     settingsMap.insert("Field", settingsField);
 
     qDebug()<<settingsMap;
@@ -264,12 +267,14 @@ void Controller::setSettings(QString groupName, QVariantMap data)
             iterator.next();
             key = iterator.key().trimmed();
             if( !key.isEmpty() && !iterator.value().isNull() )
+            {
                 if(key == "numberColors")
                     m_numberColors = iterator.value().toInt();
                 else if(key == "firstColor")
                     m_color1 = iterator.value().toString();
                 else if(key == "secondColor")
                     m_color2 = iterator.value().toString();
+            }
 
         }
     }
@@ -282,8 +287,12 @@ void Controller::setSettings(QString groupName, QVariantMap data)
             iterator.next();
             key = iterator.key().trimmed();
             if( !key.isEmpty() && !iterator.value().isNull() )
+            {
                 if(key == "fieldSize")
                     m_fieldSize = iterator.value().toInt();
+                else if(key == "level")
+                    m_level = iterator.value().toInt();
+            }
         }
     }
 }
@@ -296,8 +305,24 @@ QStringList Controller::getAllColors()
 void Controller::move()
 {
     QSet<int> rect = m_myData->getAvailableRect(m_color2, m_color1);
-    int randI = rand()% rect.size();
-    m_myData->process(rect.toList().at(randI), m_color2);
+    int randI = 0;
+    if(m_level == 1)
+    {
+     randI = rand()% rect.size();
+    }
+    else
+    {
+        for(int i = 0; i < rect.size(); i++ )
+        {
+            int h = m_myData->getTreeHeight(rect.toList().at(i),0);
+            if(h >= m_level)
+            {
+                randI = i;
+                break;
+            }
+        }
+    }
+    m_myData->process(rect.toList().at(randI), m_color2, 1);
 
     emit countSecondColorChanged();
 }

@@ -1,14 +1,13 @@
 #include "mydata.h"
 #include <QDebug>
 
-MyData::MyData(int m, int n, QObject *parent) :
+MyData::MyData(int columns, int rows, QObject *parent) :
     QAbstractListModel(parent),
-    m_rows(n),
-    m_columns(m)
+    m_rows(rows),
+    m_columns(columns)
 {
     m_roles.insert(IntRole, "IntData");
     m_roles.insert(ColorRole, "ColorData");
-
 }
 
 int MyData::rowCount(const QModelIndex &parent) const
@@ -151,7 +150,7 @@ void MyData::addItem(int i, const QColor &c)
     emit dataChanged(index, index, QVector<int>() << ColorRole);
 }
 
-void MyData::process(int ind, QString strColorReplace)
+void MyData::process(int ind, QString strColorReplace, int h)
 {
     QColor c = m_colorData.at(ind);
     QColor cReplace(strColorReplace);
@@ -161,7 +160,7 @@ void MyData::process(int ind, QString strColorReplace)
     foreach(int a, adjCells)
     {
         if(m_colorData.at(a) == c)
-            process(a, strColorReplace);
+            process(a, strColorReplace, 1);
     }
 
     QModelIndex index = createIndex(ind,0);
@@ -252,6 +251,14 @@ QSet<int> MyData::getAvailableRect(const QString &strFirstColor, const QString &
     }
 
     return res;
+}
+
+void MyData::initializeIntData()
+{
+    m_intData.clear();
+    for (int i = 0 ;i < m_columns * m_rows; i++) {
+        m_intData.append(0);
+    }
 
 }
 
@@ -270,4 +277,27 @@ QList<int> MyData::getAdjCells(int ind)
         adjCells.append( (i) * m_columns + j+1);
 
     return adjCells;
+}
+
+int MyData::getTreeHeight(int v, int h)
+{
+//    static h = 0;
+    if(h == 0){ initializeIntData();
+        h++;
+        m_intData[h]=1;
+    }
+    QList<int> lAdj = getAdjCells(v);
+    bool f = false;
+    for(int i = 0; i < lAdj.size(); i++)
+    {
+        if(m_colorData.at( lAdj.at(i)) == m_colorData.at(v) && m_intData.at(lAdj.at(i)) == 0)
+        {
+            h++;
+            f = true;
+            m_intData[lAdj.at(i)] = h;
+            return getTreeHeight(lAdj.at(i), h);
+        }
+    }
+    if(!f)
+        return h;
 }

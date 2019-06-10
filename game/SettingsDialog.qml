@@ -46,6 +46,11 @@ Window
             {
                 secondPlayerColor.currentIndex = settings["Field"]["fieldSize"] + 1;
             }
+
+            if( "level" in settings["Field"] )
+            {
+                spinBoxLevel.value = settings["Field"]["level"];
+            }
         }
     }
 
@@ -54,6 +59,7 @@ Window
         id: groupBoxSettingsColors
 
         height: 190
+        width: 260
 
         anchors.top: parent.top
         anchors.topMargin: settingsRoot.marginValue
@@ -84,9 +90,8 @@ Window
 
             anchors.verticalCenter: labelCountColors.verticalCenter
 
-            value: 6 // MyController.m_numberColors
             minimumValue: 2
-            maximumValue: 11
+            maximumValue: firstPlayerColor.count//model.count
         }
 
         Label
@@ -145,7 +150,7 @@ Window
     {
         id: groupBoxSettingsField
 
-        height: 105
+        height: 135
 
         anchors.top: groupBoxSettingsColors.bottom
         anchors.topMargin: settingsRoot.marginValue
@@ -179,7 +184,30 @@ Window
 
             model: ["small", "middle", "large", "huge"]
         }
+        Label
+        {
+            id: labelLevel
 
+            anchors.left: parent.left
+            anchors.top: fieldSize.bottom
+
+            text: qsTr("Level:")
+            anchors.topMargin: settingsRoot.marginValue / 2
+            anchors.leftMargin: settingsRoot.marginValue / 2
+        }
+        SpinBox
+        {
+            id: spinBoxLevel
+            width: 55
+            anchors.right: parent.right
+            anchors.rightMargin: settingsRoot.marginValue / 2
+
+            anchors.verticalCenter: labelLevel.verticalCenter
+
+            value: 1
+            minimumValue: 1
+            maximumValue: 3
+        }
     }
 
     Button
@@ -211,7 +239,8 @@ Window
                     "firstColor" : firstPlayerColor.currentText,
                     "secondColor" : secondPlayerColor.currentText};
                 MyController.setSettings( "Colors", settingsColor );
-                var settingsField = {  "fieldSize": fieldSize.currentIndex};
+                var settingsField = {  "fieldSize": fieldSize.currentIndex,
+                "level" : spinBoxLevel.value};
                 MyController.setSettings( "Field", settingsField );
                 settingsRoot.visible = false;
                 settingsRoot.accepted();

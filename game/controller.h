@@ -3,7 +3,7 @@
 
 #include "mydata.h"
 #include <QPair>
-const QList<QString> LIST_COLORS={"yellow", "red", "green", "cyan", "magenta", "pink", "brown", "orange", "purple", "grey", "blue" };
+const QList<QString> LIST_COLORS={"blue", "red", "yellow", "green", "cyan", "magenta", "pink", "brown", "orange", "purple", "grey" };
 
 
 class Controller : public QObject
@@ -69,7 +69,8 @@ private:
     int m_numberColors = 2;
 
     //game mode
-    int m_numberPlayers = 2;
+    int m_numberPlayers = 1;
+    int m_level = 2;
 
     //
     void move();

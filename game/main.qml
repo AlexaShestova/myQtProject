@@ -38,9 +38,14 @@ ApplicationWindow {
 
 
         }
+
         MenuBarItem{
+            id: settings
             text:  qsTr("Settings")
+
             onTriggered: {
+                settings.focus = false;
+                settings.highlighted = false;
                 settingsWindow.visible = true;
                 settingsWindow.updateSettings();
             }
@@ -251,7 +256,6 @@ ApplicationWindow {
               onRejected: {
                   console.log("saveFileDialog: Canceled")
               }
-//              Component.onCompleted: visible = true
           }
         NewGameDialog
         {
@@ -269,6 +273,7 @@ ApplicationWindow {
             title: qsTr("Settings")
             onAccepted:
             {
+                settings.highlighted = false;
                 MyController.startGame();
             }
         }

@@ -17,7 +17,8 @@ public:
         IntRole = Qt::UserRole + 1,
        ColorRole
     };
-    explicit MyData(int m, int n, QObject *parent = nullptr);
+    explicit MyData(int columns, int rows, QObject *parent = nullptr);
+
     int rowCount(const QModelIndex &parent) const Q_DECL_OVERRIDE;
     QHash<int, QByteArray> roleNames() const Q_DECL_OVERRIDE;
     QVariant data(const QModelIndex &index, int role) const Q_DECL_OVERRIDE;
@@ -37,10 +38,11 @@ public:
     void setCountColumnsRows(int newColumns, int newRows);
     void replaceData(int ind, QColor newColor);
     /*Q_INVOKABLE*/ void addItem (int i, const QColor &c);
-    void process(int ind, QString strColorReplace);
+    void process(int ind, QString strColorReplace, int h);
     void updateData(QJsonObject &obj);
 
     QList<int> getAdjCells(int ind);
+    int getTreeHeight(int v, int h);
 
     bool checkColorData(int ind, const QString &strColor);
     bool checkField(const QString &strC1, const QString &strC2/*bool isFirstPlayer*/);
@@ -59,9 +61,10 @@ private:
     QList<int> m_intData;
     QList<QColor> m_colorData;
     QHash<int, QByteArray> m_roles;
-    int m_columns=5;
-    int m_rows=5;
+    int m_columns;
+    int m_rows;
 
+    void initializeIntData();
 };
 
 #endif // MYDATA_H

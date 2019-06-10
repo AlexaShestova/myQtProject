@@ -91,7 +91,7 @@ Window
             anchors.verticalCenter: labelCountColors.verticalCenter
 
             minimumValue: 2
-            maximumValue: firstPlayerColor.count//model.count
+            maximumValue: firstPlayerColor.count - 2//model.count
         }
 
         Label

@@ -169,7 +169,7 @@ ApplicationWindow {
                         onClicked: {
                             if(MyController.checkRect(index))
                             {
-                                MyController.process(index);
+                                MyController.move(index);
 
                                 if(!MyController.checkField())
                                     dialog_gameOver.open();

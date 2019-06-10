@@ -32,7 +32,7 @@ public:
     Q_INVOKABLE void startGame();
 
     Q_INVOKABLE bool checkRect(int ind);
-    Q_INVOKABLE void process(int ind);
+    Q_INVOKABLE void move(int ind);
 
     Q_INVOKABLE bool checkField();
 
@@ -73,7 +73,7 @@ private:
     int m_level = 2;
 
     //
-    void move();
+    void computerMove();
 };
 
 #endif // CONTROLLER_H

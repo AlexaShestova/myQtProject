@@ -118,7 +118,7 @@ bool Controller::checkRect(int ind)
 
 }
 
-void Controller::process(int ind)
+void Controller::move(int ind)
 {
     if(m_isFirstPlayer)
     {
@@ -135,7 +135,7 @@ void Controller::process(int ind)
 
     if(m_numberPlayers == 1)
     {
-        move();
+        computerMove();
     }
     else
     {
@@ -302,7 +302,7 @@ QStringList Controller::getAllColors()
     return LIST_COLORS;
 }
 
-void Controller::move()
+void Controller::computerMove()
 {
     QSet<int> rect = m_myData->getAvailableRect(m_color2, m_color1);
     int randI = 0;

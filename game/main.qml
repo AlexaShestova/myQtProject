@@ -120,8 +120,8 @@ ApplicationWindow {
             rows:  MyData.rows
             anchors.verticalCenter: root.verticalCenter
             anchors.horizontalCenter: root.horizontalCenter
-            columnSpacing: 5
-            rowSpacing: 5
+            columnSpacing: 0
+            rowSpacing: 0
 
             Repeater{
 
@@ -141,11 +141,7 @@ ApplicationWindow {
                     width: grid.width / MyData.columns
                     height: grid.height / MyData.rows
                     color: ColorData
-//                    Text {
-//                        font.pointSize: 30
-//                        anchors.centerIn: parent
-//                        text: IntData
-//                    }
+
                     Rectangle
                     {
                         id: warningRect

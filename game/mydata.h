@@ -41,16 +41,16 @@ public:
     void process(int ind, QString strColorReplace, int h);
     void updateData(QJsonObject &obj);
 
-    QList<int> getAdjCells(int ind);
     int getTreeHeight(int v, int h);
 
-    bool checkColorData(int ind, const QString &strColor);
-    bool checkField(const QString &strC1, const QString &strC2/*bool isFirstPlayer*/);
+    bool checkColorData(int ind, const QString &strColor) const;
+    bool checkField(const QString &strC1, const QString &strC2/*bool isFirstPlayer*/) const;
 
-    int getNumberRectColor(QString strColor);
+    int getNumberRectColor(QString strColor) const;
 
     QString getColorsData();
     QSet<int> getAvailableRect(const QString &strFirstColor, const QString &strSecondColor);
+    QList<int> getAdjacentCells(int ind);
 signals:
     void columnsChanged();
     void rowsChanged();

@@ -156,7 +156,7 @@ void MyData::process(int ind, QString strColorReplace, int h)
     QColor cReplace(strColorReplace);
     m_colorData.replace(ind, cReplace);
     m_intData[ind] = h;
-    QList<int> adjCells = getAdjCells(ind);
+    QList<int> adjCells = getAdjacentCells(ind);
 
     foreach(int a, adjCells)
     {
@@ -181,12 +181,12 @@ void MyData::updateData(QJsonObject &obj)
     emit endInsertRows();
 }
 
-bool MyData::checkColorData(int ind, const QString &strColor)
+bool MyData::checkColorData(int ind, const QString &strColor) const
 {
     return m_colorData.at(ind) == QColor(strColor);
 }
 
-bool MyData::checkField(const QString& strC1, const QString& strC2)
+bool MyData::checkField(const QString& strC1, const QString& strC2) const
 {
     bool result = false;
     QColor c1(strC1);
@@ -196,7 +196,7 @@ bool MyData::checkField(const QString& strC1, const QString& strC2)
         QColor aC = m_colorData.at(i);
         if(aC == c1)
         {
-            QList<int> adjCells = getAdjCells( i );
+            QList<int> adjCells = getAdjacentCells( i );
 
             foreach(int a, adjCells)
             {
@@ -209,7 +209,7 @@ bool MyData::checkField(const QString& strC1, const QString& strC2)
     return result;
 }
 
-int MyData::getNumberRectColor(QString strColor)
+int MyData::getNumberRectColor(QString strColor) const
 {
     int result = 0;
     QColor  color(strColor);
@@ -242,7 +242,7 @@ QSet<int> MyData::getAvailableRect(const QString &strFirstColor, const QString &
         QColor aC = m_colorData.at(i);
         if(aC == firstCol)
         {
-            QList<int> adjCells = getAdjCells( i );
+            QList<int> adjCells = getAdjacentCells( i );
 
             foreach(int a, adjCells)
             {
@@ -264,7 +264,7 @@ void MyData::initializeIntData()
 
 }
 
-QList<int> MyData::getAdjCells(int ind)
+QList<int> MyData::getAdjacentCells(int ind) //adjacent
 {
     QList <int> adjCells;
     int i = ind / m_columns;
@@ -288,7 +288,7 @@ int MyData::getTreeHeight(int v, int h)
         h++;
         m_intData[h]=1;
     }
-    QList<int> lAdj = getAdjCells(v);
+    QList<int> lAdj = getAdjacentCells(v);
     bool f = false;
     for(int i = 0; i < lAdj.size(); i++)
     {

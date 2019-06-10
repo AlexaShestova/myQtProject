@@ -95,13 +95,13 @@ void Controller::startGame()
     emit countSecondColorChanged();
 }
 
-bool Controller::checkRect(int ind)
+bool Controller::checkRect(int ind) const
 {
     bool result = false;
     if( !m_myData->checkColorData(ind, m_color1) && !m_myData->checkColorData(ind, m_color2))
     {
 
-        QList<int> adjCells = m_myData->getAdjCells(ind);
+        QList<int> adjCells = m_myData->getAdjacentCells(ind);
         if(m_isFirstPlayer)
         {
 
@@ -144,7 +144,7 @@ void Controller::move(int ind)
     }
 }
 
-bool Controller::checkField()
+bool Controller::checkField() const
 {
     bool result = true;
 
@@ -154,7 +154,7 @@ bool Controller::checkField()
     return result;
 }
 
-QList<int> Controller::getCountRect()
+QList<int> Controller::getCountRect() const
 {
     return QList<int> () << m_myData->getNumberRectColor(m_color1) << m_myData->getNumberRectColor(m_color2);
 
@@ -237,7 +237,7 @@ bool Controller::saveGameAs(const QString &fullFileName)
 }
 
 
-QVariantMap Controller::getSettings()
+QVariantMap Controller::getSettings() const
 {
     QVariantMap settingsMap;
     QVariantMap settingsColors;
@@ -297,7 +297,7 @@ void Controller::setSettings(QString groupName, QVariantMap data)
     }
 }
 
-QStringList Controller::getAllColors()
+QStringList Controller::getAllColors() const
 {
     return LIST_COLORS;
 }
@@ -327,12 +327,12 @@ void Controller::computerMove()
     emit countSecondColorChanged();
 }
 
-int Controller::getCountFirstColor()
+int Controller::getCountFirstColor() const
 {
     return m_myData->getNumberRectColor( m_color1 );
 }
 
-int Controller::getCountSecondColor()
+int Controller::getCountSecondColor() const
 {
     return m_myData->getNumberRectColor( m_color2 );
 }

@@ -24,29 +24,29 @@ public:
     bool getIsFirstPlayer() const;
     QColor getFirstColor() const;
     QColor getSecondColor() const;
-    int getCountFirstColor();
-    int getCountSecondColor();
+    int getCountFirstColor() const;
+    int getCountSecondColor() const;
 
     void setNumberPlayers(int numberPlayers);
 
     Q_INVOKABLE void startGame();
 
-    Q_INVOKABLE bool checkRect(int ind);
+    Q_INVOKABLE bool checkRect(int ind) const;
     Q_INVOKABLE void move(int ind);
 
-    Q_INVOKABLE bool checkField();
+    Q_INVOKABLE bool checkField() const;
 
-    Q_INVOKABLE QList<int> getCountRect();
+    Q_INVOKABLE QList<int> getCountRect() const;
 
     Q_INVOKABLE bool loadGame(QString fileName );
     Q_INVOKABLE bool saveGame( const QString & fileName );
     Q_INVOKABLE bool saveGameAs( const QString &fullFileName );
 
 
-    Q_INVOKABLE QVariantMap getSettings();
+    Q_INVOKABLE QVariantMap getSettings() const;
 
     Q_INVOKABLE void setSettings(QString groupName, QVariantMap data);
-    Q_INVOKABLE QStringList getAllColors();
+    Q_INVOKABLE QStringList getAllColors() const;
 
 signals:
     void isFirstPlayerChanged();

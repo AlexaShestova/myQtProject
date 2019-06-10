@@ -106,7 +106,7 @@ int MyData::getRows() const
 void MyData::clearAll()
 {
     beginResetModel();
-    m_intData.clear();
+    initializeIntData();
     m_colorData.clear();
     endResetModel();
 }
@@ -155,16 +155,18 @@ void MyData::process(int ind, QString strColorReplace, int h)
     QColor c = m_colorData.at(ind);
     QColor cReplace(strColorReplace);
     m_colorData.replace(ind, cReplace);
+    m_intData[ind] = h;
     QList<int> adjCells = getAdjCells(ind);
 
     foreach(int a, adjCells)
     {
         if(m_colorData.at(a) == c)
-            process(a, strColorReplace, 1);
+            process(a, strColorReplace, h+1);
     }
 
     QModelIndex index = createIndex(ind,0);
     emit dataChanged(index, index, QVector<int>() << ColorRole);
+    emit dataChanged(index, index, QVector<int>() << IntRole);
 }
 
 void MyData::updateData(QJsonObject &obj)

@@ -131,7 +131,7 @@ ApplicationWindow {
                         SequentialAnimation {
 
                             PauseAnimation {
-                                duration: 0//Delay
+                                duration: IntData*200
                             }
                             ColorAnimation {
                                 duration: 500

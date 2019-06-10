@@ -19,7 +19,7 @@ class Controller : public QObject
 
     Q_PROPERTY(int numberPlayers WRITE setNumberPlayers)
 public:
-    Controller(MyData *myData, QObject *parent = nullptr);
+    explicit Controller(MyData *myData, QObject *parent = nullptr);
 
     bool getIsFirstPlayer() const;
     QColor getFirstColor() const;

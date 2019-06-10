@@ -1,5 +1,5 @@
 import QtQuick 2.0
-import QtQuick.Controls 1.0
+import QtQuick.Controls 2.0
 import QtQuick.Window 2.0
 import QtQuick.Dialogs 1.3
 
@@ -7,7 +7,7 @@ Window
 {
     id: settingsRoot
 
-    width: 300
+    width: 400
     height: 530
 
     modality: Qt.ApplicationModal
@@ -58,7 +58,7 @@ Window
     {
         id: groupBoxSettingsColors
 
-        height: 190
+        height: 250
         width: 260
 
         anchors.top: parent.top
@@ -84,14 +84,13 @@ Window
         SpinBox
         {
             id: spinBoxCountColor
-            width: 55
             anchors.right: parent.right
             anchors.rightMargin: settingsRoot.marginValue / 2
 
             anchors.verticalCenter: labelCountColors.verticalCenter
 
-            minimumValue: 2
-            maximumValue: firstPlayerColor.count - 2//model.count
+            from: 2
+            to: firstPlayerColor.count - 2//model.count
         }
 
         Label
@@ -150,7 +149,7 @@ Window
     {
         id: groupBoxSettingsField
 
-        height: 135
+        height: 175
 
         anchors.top: groupBoxSettingsColors.bottom
         anchors.topMargin: settingsRoot.marginValue
@@ -162,10 +161,32 @@ Window
 
         Label
         {
-            id: labelFieldSize
+            id: labelLevel
 
             anchors.left: parent.left
             anchors.top: parent.top
+
+            text: qsTr("Level:")
+            anchors.topMargin: settingsRoot.marginValue / 2
+            anchors.leftMargin: settingsRoot.marginValue / 2
+        }
+        SpinBox
+        {
+            id: spinBoxLevel
+            anchors.right: parent.right
+            anchors.rightMargin: settingsRoot.marginValue / 2
+
+            anchors.verticalCenter: labelLevel.verticalCenter
+
+            from: 1
+            to: 3
+        }
+        Label
+        {
+            id: labelFieldSize
+
+            anchors.left: parent.left
+            anchors.top: spinBoxLevel.bottom
 
             text: qsTr("Fiel size:")
             anchors.topMargin: settingsRoot.marginValue / 2
@@ -184,30 +205,7 @@ Window
 
             model: ["small", "middle", "large", "huge"]
         }
-        Label
-        {
-            id: labelLevel
 
-            anchors.left: parent.left
-            anchors.top: fieldSize.bottom
-
-            text: qsTr("Level:")
-            anchors.topMargin: settingsRoot.marginValue / 2
-            anchors.leftMargin: settingsRoot.marginValue / 2
-        }
-        SpinBox
-        {
-            id: spinBoxLevel
-            width: 55
-            anchors.right: parent.right
-            anchors.rightMargin: settingsRoot.marginValue / 2
-
-            anchors.verticalCenter: labelLevel.verticalCenter
-
-            value: 1
-            minimumValue: 1
-            maximumValue: 3
-        }
     }
 
     Button

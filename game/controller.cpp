@@ -315,7 +315,7 @@ void Controller::computerMove()
         for(int i = 0; i < rect.size(); i++ )
         {
             int h = m_myData->getTreeHeight(rect.toList().at(i),0);
-            if(h >= m_level)
+            if(h > m_level)
             {
                 randI = i;
                 break;

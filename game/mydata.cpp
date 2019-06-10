@@ -186,7 +186,7 @@ bool MyData::checkColorData(int ind, const QString &strColor) const
     return m_colorData.at(ind) == QColor(strColor);
 }
 
-bool MyData::checkField(const QString& strC1, const QString& strC2) const
+bool MyData::checkField(const QString& strC1, const QString& strC2)
 {
     bool result = false;
     QColor c1(strC1);
@@ -264,7 +264,7 @@ void MyData::initializeIntData()
 
 }
 
-QList<int> MyData::getAdjacentCells(int ind) //adjacent
+QList<int> MyData::getAdjacentCells(int ind)
 {
     QList <int> adjCells;
     int i = ind / m_columns;

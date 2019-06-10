@@ -44,7 +44,7 @@ public:
     int getTreeHeight(int v, int h);
 
     bool checkColorData(int ind, const QString &strColor) const;
-    bool checkField(const QString &strC1, const QString &strC2/*bool isFirstPlayer*/) const;
+    bool checkField(const QString &strC1, const QString &strC2/*bool isFirstPlayer*/);
 
     int getNumberRectColor(QString strColor) const;
 
